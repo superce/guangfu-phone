@@ -1,9 +1,9 @@
 <template>
   <div class="banner">
-    <img :src="liveDetail.image">
+    <img :src="live.topic.image">
     <div class="ban">
-      <p>{{ liveDetail.content }}</p>
-      <span v-for="(tab,index) in liveList.tags">{{ tab.item2 }}</span>
+      <p>{{ live.topic.content }}</p>
+      <span v-for="(tab,index) in live.tags">{{ tab.item2 }}</span>
     </div>
   </div>
 </template>
@@ -11,45 +11,8 @@
 <script>
 import axios from 'axios'
 export default {
-  name:'liveDetailNews',
-  data(){
-    return {
-      liveDetail:'',
-      liveList:''
-    }
-  },
-  created(){
-    this.getLive()
-  },
-  watch:{
-    "$route" : "getLive"
-  },
-  methods:{
-    getLive(){
-        let data = this.$route.params.id
-        let date = new Date(new Date()).getTime();
-        let getNewsListUrl = 'https://api.dltoutiao.com/api/News/TopicNews'
-        axios.get(getNewsListUrl,{
-            headers:{
-            Appid:'hb_app_android',
-            Timestamp:date,
-            Sign:'aaaa',
-            vtoken:''
-          },
-          params:{
-            id:data
-          }
-        }).then(res => {
-          // console.log(res.data.data)
-          this.liveDetail = res.data.data.topic
-          this.liveList = res.data.data
-          this.$emit('live',this.liveList)
-          // this.liveList = res.data.data
-          // this.loading = false
-        }).catch(e => alert(e))
-      },
-      
-  }
+  props:['live'],
+  name:'liveDetailNews'
 }
 </script>
 

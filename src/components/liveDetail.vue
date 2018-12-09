@@ -1,20 +1,19 @@
 <template>
   <div class="live-detail">
-    
     <div class="live">
       <div :class="{'detail' : !setHeight,'detail-height' : setHeight}">
         <div class="top">
           <img src="../assets/images/guangfu.jpg" alt="">
           <router-link to="/down-load">打开</router-link>
         </div>
-        <router-view @live='list'></router-view>
+        <router-view :live='liveD'></router-view>
         <div class="puclic" v-for="(tag,index) in liveD.tags" :key="index">
           <div class="h4">
             <h4>{{ tag.item2 }}</h4>
           </div>
           <ul class="list">
             <li v-for='(list,index) in liveD.newslist' :key='index'>
-              <router-link :to="{name:'liveDetail',params:{id:list.id}}" v-if="tag.item1 == list.tagid">
+              <router-link :to="{name:'liveDetailNews',params:{id:list.id}}" v-if="tag.item1 == list.tagid">
                 <div class="left">
                 <h6>{{ list.title }}</h6>
                 <p><span class="see">{{ list.source }}</span><span class="data">{{ list.indate }}</span></p>
@@ -23,7 +22,7 @@
                   <img :src="list.headimg" :alt="list.title">
                 </div>
               </router-link>
-              <router-link :to="{name:'liveDetail',params:{id:list.id}}" v-else="tag.item2 == list.tagid">
+              <router-link :to="{name:'liveDetailNews',params:{id:list.id}}" v-else="tag.item2 == list.tagid">
                 <div class="left">
                 <h6>{{ list.title }}</h6>
                 <p><span class="see">{{ list.source }}</span><span class="data">{{ list.indate }}</span></p>
@@ -61,36 +60,37 @@ import axios from 'axios'
         liveD:''
       }
     },
+    created(){
+      this.getLiveDetail()
+    },
+    watch:{
+      "$route" : "getLiveDetail"
+    },
     methods:{
       height(){
         this.setHeight = !this.setHeight
         this.open = '下载一起光伏，阅读更加'
       },
-      // 列表
-      list(liveList){
-        this.liveD = liveList
-        // console.log(liveList)
+      getLiveDetail(){
+        let data = this.$route.params.id
+        let date = new Date(new Date()).getTime();
+        let getNewsListUrl = 'https://api.dltoutiao.com/api/News/TopicNews'
+        axios.get(getNewsListUrl,{
+            headers:{
+            Appid:'hb_app_android',
+            Timestamp:date,
+            Sign:'aaaa',
+            vtoken:''
+          },
+          params:{
+            id:data
+          }
+        }).then(res => {
+          console.log(res.data.data)
+          this.liveD = res.data.data
+          // this.loading = false
+        }).catch(e => alert(e))
       }
-      // getLiveDetail(){
-      //   let data = this.$route.params.id
-      //   let date = new Date(new Date()).getTime();
-      //   let getNewsListUrl = 'https://api.dltoutiao.com/api/News/TopicNews'
-      //   axios.get(getNewsListUrl,{
-      //       headers:{
-      //       Appid:'hb_app_android',
-      //       Timestamp:date,
-      //       Sign:'aaaa',
-      //       vtoken:''
-      //     },
-      //     params:{
-      //       id:data
-      //     }
-      //   }).then(res => {
-      //     console.log(res.data.data)
-      //     this.liveD = res.data.data
-      //     this.loading = false
-      //   }).catch(e => alert(e))
-      // }
     }
   }
 </script>
