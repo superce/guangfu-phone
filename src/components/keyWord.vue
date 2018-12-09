@@ -4,7 +4,7 @@
       <h4>大家都在搜</h4>
     </div>
     <ul>
-      <li v-for="(w,index) in word" :key="index" @click='keyWordList(w)'><a>{{ w }}</a></li>
+      <li v-for="(w,index) in word" :key="index" @click='keyWordList(w)'><span>{{ index + 1 }}</span><a>{{ w }}</a></li>
     </ul>
     <Loading v-if="loading"/>
   </div>
@@ -42,6 +42,7 @@ import axios from 'axios'
         })
         .then(res => {
           this.word = res.data.data
+          // console.log(res.data.data)
           this.loading = false
         })
         .catch(e => alert('关键词加载失败'))
@@ -92,9 +93,6 @@ import axios from 'axios'
   margin: 1rem auto 0;
   display: flex;
   flex-wrap: wrap;
-  background: url(../assets/images/5.png) no-repeat;
-  background-size: 17rem 6.45rem;
-  background-position: 0 .3rem;
 }
 .keyword ul li{
   overflow: hidden;
@@ -102,12 +100,22 @@ import axios from 'axios'
   white-space: nowrap;
   width: 8.75rem;
 }
+.keyword ul li span{
+  font-size: .7rem;
+  color:#bbbbbb;
+}
+.keyword ul li:nth-child(1) span{
+  color:#de0c01
+}
+.keyword ul li:nth-child(2) span{
+  color:#ff803d
+}
+.keyword ul li:nth-child(3) span{
+  color:#ffa800;
+}
 .keyword ul li a{
   font-size: .7rem;
   color:#333333;
-  margin-left: 1rem;
-}
-.keyword ul li:last-child a{
-  margin-left: 1.4rem;
+  margin-left: .2rem;
 }
 </style>

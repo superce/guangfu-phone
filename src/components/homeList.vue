@@ -1,13 +1,13 @@
 <template>
   <div class="home_content">
-    <mescroll-vue ref="mescroll" :up="mescrollUp" @init="mescrollInit">
+    <mescroll-vue ref="mescroll" :up='mescrollUp' @init='mescrollInit'>
       <div class="home-down">
         <ul>
           <li v-for="(top,index) in topMsg" :key="index" v-if="top.showTempate == 11">
-            <router-link class='left-right' :to="{name:'Detail',params:{id:top.id,icon:top.headImg}}">
+            <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}">
               <div class="left" >
                 <h4>{{ top.title }}</h4>
-                <p><span class="top">置顶</span><span>{{top.source}}</span><span>{{ top.indate }}</span></p>
+                <p><span class="top">置顶</span><span>{{top.source}}</span><span>{{ timeFn(data) }}</span></p>
               </div>
               <div class="right">
                 <img :src="top.imageList" :alt="top.title">
@@ -15,63 +15,64 @@
             </router-link>
           </li>
           <li v-for="(data,index) in dataMsg" :key="index">
-            <router-link class='left-right' :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList.length < 3 && data.imageList.length >= 1">
+            <router-link class='left-right' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList != ''">
               <div class="left" >
                 <h4>{{ data.title }}</h4>
-                <p><span>{{data.source}}</span><span v-html="data.indate"></span></p>
+                <p><span>{{data.source}}</span><span>{{ timeFn(data) }}</span></p>
               </div>
               <div class="right">
-                <img src="../assets/images/5.png" alt="">
                 <img :src="data.imageList" :alt="data.title">
               </div>
             </router-link>
-            <router-link class='one' :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null && data.imageList.length < 3 && data.imageList.length >= 1">
+            <router-link class='one' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null  && data.imageList != ''">
               <h4>{{data.title}}</h4>
               <img :src="data.imageList" :alt="data.title">
-              <p><span>{{data.source}}</span><span>{{ data.indate }}</span> </p>
+              <p><span>{{data.source}}</span><span>{{ timeFn(data) }}</span> </p>
             </router-link>
-            <router-link class="third" :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList.length >= 3">
+            <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
               <h4>{{ data.title }}</h4>
               <dd>
-                <dl >
-                  <img src="../assets/images/5.png" alt="">
-                </dl>
-                <dl >
-                  <img src="../assets/images/5.png" alt="">
-                </dl>
-                <dl >
-                  <img src="../assets/images/5.png" alt="">
+                <dl v-for="(image,index) in getImage(data)" :key="index">
+                  <img :src="image" alt="">
                 </dl>
               </dd>
-              <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
+              <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{timeFn(data)}}</span></p>
             </router-link>
-            <router-link :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else>
+            <router-link :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else>
               <h4>{{data.title}}</h4>
-              <p><span>{{data.source}}</span><span>{{data.indate}}</span></p>
+              <p><span>{{data.source}}</span><span>{{timeFn(data)}}</span></p>
             </router-link>  
           </li>
+          <Loading v-if='loading' class="ab"/>
         </ul>
       </div> 
     </mescroll-vue>
   </div>
 </template>
 <script>
+import Loading from './Loading'
 import axios from 'axios'
 import MescrollVue from 'mescroll.js/mescroll.vue'
 export default {
   components: {
-    MescrollVue // 注册mescroll组件
+    MescrollVue, // 注册mescroll组件
+    Loading
   },
   name:'homeList',
   data () {
     return {
+      loading:true,
       mescroll: null, // mescroll实例对象
-      mescrollDown:{}, //下拉刷新的配置
+      mescrollDown:{
+        callback:this.getNewsList
+      }, //下拉刷新的配置
       mescrollUp:{
         callback: this.upCallback
       },
       dataMsg:'',
+      images:'',
       topMsg:'',
+      REQUIRE:true,
       max:'',
       min:''
     }
@@ -80,11 +81,14 @@ export default {
     this.getNewsList()
     this.top()
   },
+  mounted(){
+    this.more
+  },
   watch:{
     "$route": ['getNewsList','top']//监听路由变化，重新渲染数据
   },
   methods:{
-    
+    // 置顶
     top(){
       let data = this.$route.params.id
       let date = new Date(new Date()).getTime();
@@ -103,8 +107,9 @@ export default {
         .then(res => {
           this.topMsg = res.data.data
         })
-        .catch(e => alert(e))
+        .catch(e => alert('获取置顶新闻失败'))
     },
+    // 列表数据
     getNewsList(){
       let data = this.$route.params.id
       let date = new Date(new Date()).getTime();
@@ -126,8 +131,10 @@ export default {
           }
         })
         .then(res => {
+          this.loading = false
           this.dataMsg = res.data.data.items
-          // console.log(res.data.data.items)
+          console.log(res.data.data.items)
+          // this.getImage(data)
           // this.max = res.data.data.minid;
           // console.log(res.data.data.minid)
           // console.log(this.max)
@@ -136,8 +143,43 @@ export default {
         })
         .catch(e => alert('请求新闻失败'))
     },
-    getImage(imgs){
-      img.split("|")
+    // 滚动加载
+    more(){
+      if((((window.screen.height + document.body.scrollTop) > (document.body.clientHeight)) && this.REQUIRE)){
+        console.log(123)
+      }
+      // let data = this.$route.params.id
+      // let date = new Date(new Date()).getTime();
+      // let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
+      // axios.get(getNewsListUrl,{
+      //     headers:{
+      //     Appid:'hb_app_android',
+      //     Timestamp:date,
+      //     Sign:'aaaa',
+      //     vtoken:''
+      //   },
+      //     params:{
+      //       'channelid':data,
+      //       'isUp':1,
+      //       'maxid':0,
+      //       'minid':0,
+      //       'deviceId':'726607C0-233E-4EA4-8FAB-F3D80454ADB3',
+      //       'pagesize':10
+      //     }
+      //   })
+      //   .then(res => {
+      //     this.dataMsg = res.data.data.items
+      //     // console.log(res.data.data.items)
+      //     // this.max = res.data.data.minid;
+      //     // console.log(res.data.data.minid)
+      //     // console.log(this.max)
+      //     // this.min = this.max - 10
+      //     // console.log(this.min)
+      //   })
+      //   .catch(e => alert('请求新闻失败'))
+    },
+    getImage(images){
+      return images.imageList.split("|")
     },
     // mescroll组件初始化的回调,可获取到mescroll对象 (如果this.mescroll并没有使用到,可不用写mescrollInit)
     mescrollInit (mescroll) {
@@ -183,7 +225,7 @@ export default {
     // 计算时间差
      timeFn(time) {
         //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
-        var dateBegin = new Date(time.replace(/-/g, "/"));//将-转化为/，使用new Date
+        var dateBegin = new Date(time.indate.replace(/-/g, "/"));//将-转化为/，使用new Date
         var dateEnd = new Date();//获取当前时间
         var dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
         var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
@@ -199,10 +241,10 @@ export default {
         // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
         //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
 
-        if(minutes < 1 ) console.log(time.indate = '刚刚')
-        if(60 > minutes > 1) console.log(time.indate = minutes + "分钟以前")
-        if(24 > hours > 1 ) console.log(time.indate = hours + '小时以前')
-        if(dayDiff > 1) console.log(time.indate = dayDiff + '天以前')
+        if(minutes < 1 ) return '刚刚'
+        if(minutes < 60 && minutes > 1) return minutes + "分钟以前"
+        if(hours < 24 && hours >1 ) return hours + '小时以前'
+        if(dayDiff > 1) return dayDiff + '天以前'
     }
   }
 }
@@ -215,12 +257,19 @@ export default {
     bottom: 0;
     height: auto;
   }
+  .ab{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%)
+  }
   .home_content ul{
     width: 17.75rem;
     margin: 0 auto;
   }
   .home_content ul a.left-right{
     display: flex;
+    justify-content: space-between;
   }
   .home_content ul li{
     margin-top: 1rem;
@@ -228,7 +277,7 @@ export default {
     padding-bottom: .5rem;
   }
   .home_content ul .left{
-    width: 12rem;
+    width: 11.5rem;
   }
   .home_content ul li h4{
     max-height: 2.4rem;

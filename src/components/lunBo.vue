@@ -2,7 +2,7 @@
   <div class="lun_bo">
     <wc-swiper class="swiper" :duration="1000">
       <wc-slide v-for="(s,index) in listMsg" :key="index">
-        <router-link :to="{name:'liveDetail',params:{id:s.id}}">
+        <router-link :to="{name:'liveDetailNews',params:{id:s.id}}">
           <img :src="s.headImg" :alt="s.title">
           <p><span>{{ s.title }}</span></p>
         </router-link>
@@ -13,21 +13,8 @@
 
 <script>
   export default {
-    props:{
-      listMsg:{String,Array},
-      required:true
-    },
+    props:['listMsg'],
     name:'lunBo',
-    // methods:{
-    //   go(s){
-    //     this.$router.push({
-    //       name:"liveDetail",
-    //       params:{
-    //         id:
-    //       }
-    //     })
-    //   }
-    // }
   }
 </script>
 

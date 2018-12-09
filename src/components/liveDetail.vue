@@ -7,13 +7,7 @@
           <img src="../assets/images/guangfu.jpg" alt="">
           <router-link to="/down-load">打开</router-link>
         </div>
-        <div class="banner">
-          <img :src="liveD.topic.image">
-          <div class="ban">
-            <p>{{ liveD.topic.content }}</p>
-            <span v-for="(tag,index) in liveD.tags" :key="index">{{ tag.item2 }}</span>
-          </div>
-        </div>
+        <router-view @live='list'></router-view>
         <div class="puclic" v-for="(tag,index) in liveD.tags" :key="index">
           <div class="h4">
             <h4>{{ tag.item2 }}</h4>
@@ -47,54 +41,56 @@
       </div>
     </div>
     <router-link to="/down-load" :class="{'app' : !setHeight, 'app2' : setHeight}">{{ open }}</router-link>
-    <loading v-if="loading"/>
   </div>
 </template>
 <script>
-import Loading from './Loading' 
+import liveDetailNews from './liveDetailNews'
 import More from './more'
 import axios from 'axios'
+// import Loading from './Loading'
   export default {
     components:{
-      More,Loading
+      More,
+      liveDetailNews
     },
     name:'liveDetail',
     data (){
       return{
-        loading: true,
         open:"打开app阅读全文",
         setHeight:false,
-        liveD:""
+        liveD:''
       }
-    },
-    created(){
-      this.getLiveDetail()
     },
     methods:{
       height(){
         this.setHeight = !this.setHeight
         this.open = '下载一起光伏，阅读更加'
       },
-      getLiveDetail(){
-        let data = this.$route.params.id
-        let date = new Date(new Date()).getTime();
-        let getNewsListUrl = 'https://api.dltoutiao.com/api/News/TopicNews'
-        axios.get(getNewsListUrl,{
-            headers:{
-            Appid:'hb_app_android',
-            Timestamp:date,
-            Sign:'aaaa',
-            vtoken:''
-          },
-          params:{
-            id:data
-          }
-        }).then(res => {
-          // console.log(res.data.data)
-          this.liveD = res.data.data
-          this.loading = false
-        }).catch(e => alert(e))
+      // 列表
+      list(liveList){
+        this.liveD = liveList
+        // console.log(liveList)
       }
+      // getLiveDetail(){
+      //   let data = this.$route.params.id
+      //   let date = new Date(new Date()).getTime();
+      //   let getNewsListUrl = 'https://api.dltoutiao.com/api/News/TopicNews'
+      //   axios.get(getNewsListUrl,{
+      //       headers:{
+      //       Appid:'hb_app_android',
+      //       Timestamp:date,
+      //       Sign:'aaaa',
+      //       vtoken:''
+      //     },
+      //     params:{
+      //       id:data
+      //     }
+      //   }).then(res => {
+      //     console.log(res.data.data)
+      //     this.liveD = res.data.data
+      //     this.loading = false
+      //   }).catch(e => alert(e))
+      // }
     }
   }
 </script>
@@ -132,32 +128,7 @@ import axios from 'axios'
   .detail-height{
     height: auto;
   }
-  .banner{
-    width:100%;
-    margin-top: 2.3rem;
-  }
-  .banner .ban{
-    width: 17.5rem;
-    margin: 0 auto;
-  }
-  .banner img{
-    width: 100%;
-  }
-  .banner p{
-    font-size: .8rem;
-    color:#000;
-    line-height: 1.1rem;
-    margin-bottom: .5rem;
-    font-family: "Microsoft Yahei Simhei";
-  }
-  .banner span{
-    font-size: .7rem;
-    color:#333;
-    border-radius: .4rem;
-    border: 1px solid #000;
-    margin:0 .3rem;
-    padding:.1rem .3rem;
-  }
+ 
 .puclic{
   margin-top: 1rem;
 }

@@ -10,6 +10,8 @@ import myChannel from '@/components/myChannel'
 import liveBroad from '@/components/liveBroad'
 import liveDetail from '@/components/liveDetail'
 import downLoad from '@/components/downLoad'
+import DetailNews from '@/components/DetailNews'
+import liveDetailNews from '@/components/liveDetailNews'
 Vue.use(Router)
 
 export default new Router({
@@ -42,7 +44,7 @@ export default new Router({
           component:keyWord
         },
         {
-          path:'keywordlist',
+          path:'keywordlist/:id',
           name:'keyWordList',
           component:keyWordList
         }
@@ -50,8 +52,17 @@ export default new Router({
     },
     {
       path:'/detail',
-      name:'Detail',
-      component:Detail
+      name:'Detail',  
+      component:Detail,
+      redirect:'/detail/detail-news',
+      children:[
+        {
+          path:'detail-news/:id',
+          name:"DetailNews",
+          component:DetailNews
+
+        }
+      ]
     },
     {
       path:'/home/mychannel',
@@ -64,9 +75,16 @@ export default new Router({
       component:liveBroad
     },
     {
-      path:'/livebroadcast/livedetail',
-      name:"liveDetail",
-      component:liveDetail
+      path:'/live-detail',
+      name:'liveDetail',
+      component:liveDetail,
+      children:[
+        {
+          path:'livedetailnews/:id',
+          name:'liveDetailNews',
+          component:liveDetailNews
+        }
+      ]
     },
     {
       path:'/down-load',

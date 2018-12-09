@@ -22,9 +22,7 @@
         <router-link class="third" :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else>
           <h4>{{ data.title }}</h4>
           <dd>
-            <dl><img :src="data.imageList[0]" :alt="data.title"></dl>
-            <dl><img :src="data.imageList[1]" :alt="data.title"></dl>
-            <dl><img :src="data.imageList[2]" :alt="data.title"></dl>
+            <dl v-for="(img,index) in splitImages(data)"><img :src="img" :alt="data.title"></dl>
           </dd>
           <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
         </router-link>
@@ -52,9 +50,7 @@
         <router-link class="third" :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else>
           <h4>{{ data.title }}</h4>
           <dd>
-            <dl><img :src="data.imageList[0]" :alt="data.title"></dl>
-            <dl><img :src="data.imageList[1]" :alt="data.title"></dl>
-            <dl><img :src="data.imageList[2]" :alt="data.title"></dl>
+            <dl v-for="(img,index) in splitImages(data)"><img :src="img" :alt="data.title"></dl>
           </dd>
           <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
         </router-link>
@@ -72,6 +68,36 @@ import axios from 'axios'
         keyList:this.$route.query.keywordid,
         keyword:this.$route.query.keyword,
       }
+    },
+    methods:{
+      // 分割图片链接
+      splitImages(images){
+        return images.imageList.split("|")
+      },
+      // 转换时间差
+       timeFn(time) {
+        //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+        var dateBegin = new Date(time.indate.replace(/-/g, "/"));//将-转化为/，使用new Date
+        var dateEnd = new Date();//获取当前时间
+        var dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
+        var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+        var leave1=dateDiff%(24*3600*1000)    //计算天数后剩余的毫秒数
+        var hours=Math.floor(leave1/(3600*1000))//计算出小时数
+        //计算相差分钟数
+        var leave2=leave1%(3600*1000)    //计算小时数后剩余的毫秒数
+        var minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
+        //计算相差秒数
+        var leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
+        var seconds=Math.round(leave3/1000)
+        // console.log(" 相差 "+dayDiff+"天 "+hours+"小时 "+minutes+" 分钟"+seconds+" 秒")
+        // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
+        //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
+
+        if(seconds < 60 ) return '刚刚'
+        if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
+        if(hours < 24 && hours >= 1 ) return hours + '小时以前'
+        if(dayDiff >= 1) return dayDiff + '天以前'
+    }
     }
   }
 </script>

@@ -4,7 +4,7 @@
     <h5>热门推荐</h5>
     <ul>
       <li v-for="(hot,index) in hotRec" :key="index">
-        <router-link :to="{name:'Detail',params:{id:hot.id,icon:hot.headImg}}" v-if="hot.showTempate == 0 && hot.user == null && 3 > hot.imageList.length >= 1">
+        <router-link :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-if="hot.showTempate == 0 && hot.user == null && hot.imageList != ''">
           <div class="left">
             <p>{{ hot.title }}</p>
             <div class="tab">
@@ -14,15 +14,13 @@
             </div>
           </div>
           <div class="right">
-            <img src="../assets/images/4.png" />
+            <img :src="hot.imageList" />
           </div>
         </router-link>
-        <router-link class='hot-a' :to="{name:'Detail',params:{id:hot.id,icon:hot.headImg}}" v-if="hot.showTempate == 3 && hot.user == null && hot.imageList.length >= 3">
+        <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else-if="hot.showTempate == 3 && hot.user == null && hot.imageList != ''">
           <p>{{ hot.title }}</p>
           <dl>
-            <dd><img :src="hot.imageList" alt=""></dd>
-            <dd><img :src="hot.imageList" alt=""></dd>
-            <dd><img :src="hot.imageList" alt=""></dd>
+            <dd v-for="(img,index) in splitImg(hot)"><img :src="img" alt=""></dd>
           </dl>
           <div class="tab tabt">
             <span class="openapp">打开APP</span>
@@ -30,7 +28,15 @@
             <span>{{hot.indate}}</span>
           </div>
         </router-link>
-        <router-link class='hot-a' :to="{name:'Detail',params:{id:hot.id,icon:hot.headImg}}" v-if="hot.showTempate == 0 && hot.user != null && hot.imageList.length == 0">
+        <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else-if="hot.showTempate == 0 && hot.user != null && hot.imageList.length == 0">
+          <p>{{hot.title}}</p>
+          <div class="tab tabt">
+            <span class="openapp">打开APP</span>
+            <span>{{hot.source}}</span>
+            <span>{{hot.indate}}</span>
+          </div>
+        </router-link>
+        <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else>
           <p>{{hot.title}}</p>
           <div class="tab tabt">
             <span class="openapp">打开APP</span>
@@ -53,13 +59,15 @@ import axios from 'axios'
   name:'hotRec',
   data () {
     return {
-      hotRec:''
+      hotRec:'',
+      imageLists:''
     }
   },
   created(){
     this.getHot()
   },
   methods:{
+    // 热门推荐
     getHot(){
         let date = new Date(new Date()).getTime();
         let getNewsListUrl = 'https://api.dltoutiao.com/api/News/HotNews'
@@ -76,11 +84,28 @@ import axios from 'axios'
           })
           .then(res => {
             this.hotRec = res.data.data.list
+            console.log(this.hotRec)
           })
           .catch(e => alert(e))
+      },
+      splitImg(imgs){
+        return imgs.imageList.split("|")
+      },
+      route(id){
+        this.$router.push({
+          name:'Detail',
+          params:{
+            id:id.id,
+            icon:id.headImg
+          }
+        })
       }
+  },
+  goTop(){
+    document.body.scrollTop = 0
+    document.documentElement.scrollTop = 0
   }
-  }
+}
 </script>
 <style scoped>
 .hot-rec{
@@ -158,10 +183,12 @@ import axios from 'axios'
 }
 .hot-rec li .hot-a dl dd{
   width:33%;
+  height: 3.75rem;
   margin:0 1%;
 }
 .hot-rec li .hot-a dl dd img{
   width:100%;
+  height: 100%;
   margin:0;
   padding: 0
 }

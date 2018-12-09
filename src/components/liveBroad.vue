@@ -12,7 +12,7 @@
       </div>
       <ul class="list">
         <li v-for="(list,index) in dataMsg" :key="index">
-          <router-link :to="{name:'liveDetail',params:{id:list.id}}">
+          <router-link :to="{name:'liveDetailNews',params:{id:list.id}}">
             <div class="left">
             <h6>{{ list.title }}</h6>
             <p>
@@ -59,7 +59,6 @@
   },
   methods:{
     getLiveList(){
-      let arr = []
       let date = new Date(new Date()).getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
       axios.get(getNewsListUrl,{
@@ -79,8 +78,7 @@
           }
         })
         .then(res => {
-          arr = res.data.data.items
-          this.dataMsg = arr
+          this.dataMsg = res.data.data.items
           this.loading = false
         })
         .catch(e => alert('新闻加载失败'))
