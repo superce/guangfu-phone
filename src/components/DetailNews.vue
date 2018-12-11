@@ -51,7 +51,7 @@ export default {
         let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsDetailV2'
         axios.get(getNewsListUrl,{
             headers:{
-            Appid:'hb_app_android',
+            Appid:'gf_app_android',
             Timestamp:date,
             Sign:'aaaa',
             vtoken:''
@@ -108,7 +108,7 @@ export default {
   margin-top: 1rem;
 }
 .intro{
-  height: 6.5rem;
+  height: 20rem;
   overflow: hidden;
 }
 .set-height{

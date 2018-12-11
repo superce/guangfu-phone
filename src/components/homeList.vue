@@ -1,6 +1,6 @@
 <template>
   <div class="home_content">
-    <mescroll-vue ref="mescroll" :up='mescrollUp' @init='mescrollInit'>
+    <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp' @init="mescrollInit">
       <div class="home-down">
         <ul>
           <li v-for="(top,index) in topMsg" :key="index" v-if="top.showTempate == 11">
@@ -32,8 +32,8 @@
             <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
               <h4>{{ data.title }}</h4>
               <dd>
-                <dl v-for="(image,index) in getImage(data)" :key="index">
-                  <img :src="image" alt="">
+                <dl>
+                  <img :src="getImage(data)[0]" alt="">
                 </dl>
               </dd>
               <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{timeFn(data)}}</span></p>
@@ -72,7 +72,6 @@ export default {
       dataMsg:'',
       images:'',
       topMsg:'',
-      REQUIRE:true,
       max:'',
       min:''
     }
@@ -80,9 +79,6 @@ export default {
   created(){
     this.getNewsList()
     this.top()
-  },
-  mounted(){
-    this.more
   },
   watch:{
     "$route": ['getNewsList','top']//监听路由变化，重新渲染数据
@@ -109,9 +105,13 @@ export default {
         })
         .catch(e => alert('获取置顶新闻失败'))
     },
+    mescrollInit (mescroll) {
+      this.mescroll = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
+    },
     // 列表数据
-    getNewsList(){
+    getNewsList(mescroll){
       let data = this.$route.params.id
+      console.log(data)
       let date = new Date(new Date()).getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
       axios.get(getNewsListUrl,{
@@ -133,50 +133,17 @@ export default {
         .then(res => {
           this.loading = false
           this.dataMsg = res.data.data.items
-          console.log(res.data.data.items)
-          // this.getImage(data)
-          // this.max = res.data.data.minid;
-          // console.log(res.data.data.minid)
-          // console.log(this.max)
-          // this.min = this.max - 10
-          // console.log(this.min)
+          this.max = res.data.data.minid;
+          this.min = this.max - 10
+          document.body.scrollTop = 0
+          document.documentElement.scrollTop = 0
+          console.log('第一次' + this.max + '----' + this.min)
+            this.$nextTick(() => {
+              mescroll.endSuccess()
+            })
+            
         })
         .catch(e => alert('请求新闻失败'))
-    },
-    // 滚动加载
-    more(){
-      if((((window.screen.height + document.body.scrollTop) > (document.body.clientHeight)) && this.REQUIRE)){
-        console.log(123)
-      }
-      // let data = this.$route.params.id
-      // let date = new Date(new Date()).getTime();
-      // let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
-      // axios.get(getNewsListUrl,{
-      //     headers:{
-      //     Appid:'hb_app_android',
-      //     Timestamp:date,
-      //     Sign:'aaaa',
-      //     vtoken:''
-      //   },
-      //     params:{
-      //       'channelid':data,
-      //       'isUp':1,
-      //       'maxid':0,
-      //       'minid':0,
-      //       'deviceId':'726607C0-233E-4EA4-8FAB-F3D80454ADB3',
-      //       'pagesize':10
-      //     }
-      //   })
-      //   .then(res => {
-      //     this.dataMsg = res.data.data.items
-      //     // console.log(res.data.data.items)
-      //     // this.max = res.data.data.minid;
-      //     // console.log(res.data.data.minid)
-      //     // console.log(this.max)
-      //     // this.min = this.max - 10
-      //     // console.log(this.min)
-      //   })
-      //   .catch(e => alert('请求新闻失败'))
     },
     getImage(images){
       return images.imageList.split("|")
@@ -185,43 +152,45 @@ export default {
     mescrollInit (mescroll) {
       this.mescroll = mescroll
     },
-
-    // upCallback (page, mescroll) {
-    //   let data = this.$route.params.id
-    //   let date = new Date(new Date()).getTime();
-    //   let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
-    //   axios.get(getNewsListUrl,{
-    //       headers:{
-    //       Appid:'hb_app_android',
-    //       Timestamp:date,
-    //       Sign:'aaaa',
-    //       vtoken:''
-    //     },
-    //       params:{
-    //         'channelid':data,
-    //         'isUp':1,
-    //         'maxid':0,
-    //         'minid':0,
-    //         'deviceId':'726607C0-233E-4EA4-8FAB-F3D80454ADB3',
-    //         'pagesize':10
-    //       }
-    //     }).then((res) => {
-    //     //请求的列表数据
-    //     console.log(res.data.data)
-    //     let arr = res.data.data.items
-    //     // 如果是第一页需手动制空列表
-    //     if (page.num === 1) this.dataMsg = []
-    //     // 把请求到的数据添加到列表
-    //     this.dataMsg = this.dataMsg.concat(arr)
-    //     // 数据渲染成功后,隐藏下拉刷新的状态
-    //     this.$nextTick(() => {
-    //       mescroll.endSuccess(arr.length)
-    //     })
-    //   }).catch((e) => {
-    //     // 联网失败的回调,隐藏下拉刷新和上拉加载的状态;
-    //     mescroll.endErr()
-    //   })
-    // },
+    upCallback (page, mescroll) {
+      let data = this.$route.params.id
+      let date = new Date(new Date()).getTime();
+      let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
+      axios.get(getNewsListUrl,{
+          headers:{
+          Appid:'gf_app_android',
+          Timestamp:date,
+          Sign:'aaaa',
+          vtoken:''
+        },
+          params:{
+            'channelid':data,
+            'isUp':1,
+            'maxid':this.max,
+            'minid':this.min,
+            'deviceId':'726607C0-233E-4EA4-8FAB-F3D80454ADB3',
+            'pagesize':10
+          }
+        }).then((res) => {
+        //请求的列表数据
+        console.log(this.max + '----' + this.min)
+        console.log(res.data.data)
+        let arr = res.data.data.items
+        // 如果是第一页需手动制空列表
+        if (page.num === 1) this.dataMsg = []
+        // 把请求到的数据添加到列表
+        this.dataMsg = this.dataMsg.concat(arr)
+        // 数据渲染成功后,隐藏下拉刷新的状态
+        this.$nextTick(() => {
+          mescroll.endSuccess(arr.length)
+        })
+        this.max = res.data.data.minid
+        this.min = this.max - 10
+      }).catch((e) => {
+        // 联网失败的回调,隐藏下拉刷新和上拉加载的状态;
+        mescroll.endErr()
+      })
+    },
     // 计算时间差
      timeFn(time) {
         //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
@@ -241,10 +210,10 @@ export default {
         // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
         //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
 
-        if(minutes < 1 ) return '刚刚'
-        if(minutes < 60 && minutes > 1) return minutes + "分钟以前"
-        if(hours < 24 && hours >1 ) return hours + '小时以前'
-        if(dayDiff > 1) return dayDiff + '天以前'
+        if(dayDiff >= 1) return dayDiff + '天以前'
+        if(hours < 24 && hours >= 1 ) return hours + '小时以前'
+        if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
+        if(seconds < 60 ) return '刚刚'
     }
   }
 }
@@ -311,6 +280,7 @@ export default {
     height: 100%;
   }
   .home_content ul .one img{
+    height: 3.8rem;
     margin-top: .5rem;
   }
   .home_content ul .third dd{
@@ -318,7 +288,7 @@ export default {
     margin-top: .5rem;
   }
   .home_content ul .third dl{
-    width: 33%;
+    width: 100%;
     height: 3.75rem;
     overflow: hidden;
     margin:0 1%;

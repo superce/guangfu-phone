@@ -2,7 +2,7 @@
   <div class="open">
     <div class="open-box">
       <img src="../assets/images/6.png" alt="">
-      <span>打开</span>
+      <router-link to="/down-load">打开</router-link>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
 .open img{
   width: 5rem;
 }
-.open-box span{
+.open-box a{
   font-size: .7rem;
   color:#fff;
   background: #5c8dfe;

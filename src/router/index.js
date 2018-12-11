@@ -11,7 +11,6 @@ import liveBroad from '@/components/liveBroad'
 import liveDetail from '@/components/liveDetail'
 import downLoad from '@/components/downLoad'
 import DetailNews from '@/components/DetailNews'
-import liveDetailNews from '@/components/liveDetailNews'
 Vue.use(Router)
 
 export default new Router({
@@ -44,7 +43,7 @@ export default new Router({
           component:keyWord
         },
         {
-          path:'keywordlist/:id',
+          path:'keywordlist',
           name:'keyWordList',
           component:keyWordList
         }
@@ -75,16 +74,10 @@ export default new Router({
       component:liveBroad
     },
     {
-      path:'/live-detail',
+      path:'/live-detail/:id',
       name:'liveDetail',
-      component:liveDetail,
-      children:[
-        {
-          path:'livedetailnews/:id',
-          name:'liveDetailNews',
-          component:liveDetailNews
-        }
-      ]
+      component:liveDetail
+
     },
     {
       path:'/down-load',

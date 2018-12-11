@@ -10,7 +10,7 @@
             <div class="tab">
               <span class="openapp">打开APP</span>
               <span>{{ hot.source }}</span>
-              <span>{{ hot.indate }}</span>
+              <span>{{ timeFn(hot) }}</span>
             </div>
           </div>
           <div class="right">
@@ -20,12 +20,12 @@
         <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else-if="hot.showTempate == 3 && hot.user == null && hot.imageList != ''">
           <p>{{ hot.title }}</p>
           <dl>
-            <dd v-for="(img,index) in splitImg(hot)"><img :src="img" alt=""></dd>
+            <dd v-for="(img,index) in splitImg(hot)" :key="index"><img :src="img" alt=""></dd>
           </dl>
           <div class="tab tabt">
             <span class="openapp">打开APP</span>
             <span>{{hot.source}}<img src="../assets/images/4.png" alt=""></span>
-            <span>{{hot.indate}}</span>
+            <span>{{timeFn(hot)}}</span>
           </div>
         </router-link>
         <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else-if="hot.showTempate == 0 && hot.user != null && hot.imageList.length == 0">
@@ -33,7 +33,7 @@
           <div class="tab tabt">
             <span class="openapp">打开APP</span>
             <span>{{hot.source}}</span>
-            <span>{{hot.indate}}</span>
+            <span>{{timeFn(hot)}}</span>
           </div>
         </router-link>
         <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else>
@@ -41,7 +41,7 @@
           <div class="tab tabt">
             <span class="openapp">打开APP</span>
             <span>{{hot.source}}</span>
-            <span>{{hot.indate}}</span>
+            <span>{{timeFn(hot)}}</span>
           </div>
         </router-link>
       </li>
@@ -69,42 +69,52 @@ import axios from 'axios'
   methods:{
     // 热门推荐
     getHot(){
-        let date = new Date(new Date()).getTime();
-        let getNewsListUrl = 'https://api.dltoutiao.com/api/News/HotNews'
-        axios.get(getNewsListUrl,{
-            headers:{
-            Appid:'hb_app_android',
+      let date = new Date(new Date()).getTime();
+      let getNewsListUrl = 'https://api.dltoutiao.com/api/News/HotNews'
+      axios.get(getNewsListUrl,{
+          headers:{
+            Appid:'gf_app_android',
             Timestamp:date,
             Sign:'aaaa',
             vtoken:''
           },
-            params:{
-              'top':10
-            }
-          })
-          .then(res => {
-            this.hotRec = res.data.data.list
-            console.log(this.hotRec)
-          })
-          .catch(e => alert(e))
-      },
-      splitImg(imgs){
-        return imgs.imageList.split("|")
-      },
-      route(id){
-        this.$router.push({
-          name:'Detail',
           params:{
-            id:id.id,
-            icon:id.headImg
+            'top':10
           }
+        }).then(res => {
+          this.hotRec = res.data.data.list
+          console.log(this.hotRec)
         })
-      }
-  },
-  goTop(){
-    document.body.scrollTop = 0
-    document.documentElement.scrollTop = 0
+        .catch(e => alert(e))
+      },
+    splitImg(imgs){
+      return imgs.imageList.split("|")
+    },
+    timeFn(time) {
+        //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+        var dateBegin = new Date(time.indate.replace(/-/g, "/"));//将-转化为/，使用new Date
+        var dateEnd = new Date();//获取当前时间
+        var dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
+        var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+        var leave1=dateDiff%(24*3600*1000)    //计算天数后剩余的毫秒数
+        var hours=Math.floor(leave1/(3600*1000))//计算出小时数
+        //计算相差分钟数
+        var leave2=leave1%(3600*1000)    //计算小时数后剩余的毫秒数
+        var minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
+        //计算相差秒数
+        var leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
+        var seconds=Math.round(leave3/1000)
+        // console.log(" 相差 "+dayDiff+"天 "+hours+"小时 "+minutes+" 分钟"+seconds+" 秒")
+        // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
+        //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
+
+       if(dayDiff >= 1) return dayDiff + '天以前'
+        if(hours < 24 && hours >= 1 ) return hours + '小时以前'
+        if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
+        if(seconds < 60 ) return '刚刚'
+    }
   }
+    
 }
 </script>
 <style scoped>

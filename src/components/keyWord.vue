@@ -4,7 +4,7 @@
       <h4>大家都在搜</h4>
     </div>
     <ul>
-      <li v-for="(w,index) in word" :key="index" @click='keyWordList(w)'><span>{{ index + 1 }}</span><a>{{ w }}</a></li>
+      <li v-for="(w,index) in word" :key="index" @click='keyWordList(w)'><span>{{ index + 1 }}</span><span class="a">{{ w }}</span></li>
     </ul>
     <Loading v-if="loading"/>
   </div>
@@ -31,7 +31,7 @@ import axios from 'axios'
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/HotKeywords'
       axios.get(getNewsListUrl,{
           headers:{
-          Appid:'hb_app_android',
+          Appid:'gf_app_android',
           Timestamp:date,
           Sign:'aaaa',
           vtoken:''
@@ -66,7 +66,7 @@ import axios from 'axios'
           this.$router.push({
             path:'keywordlist',
             query:{
-              'keywordid':res.data.data.list
+              'keyword':res.data.data.list
             }
           })
         }).catch(e => {
@@ -113,7 +113,8 @@ import axios from 'axios'
 .keyword ul li:nth-child(3) span{
   color:#ffa800;
 }
-.keyword ul li a{
+.keyword ul li .a{
+  color:#333 !important;
   font-size: .7rem;
   color:#333333;
   margin-left: .2rem;

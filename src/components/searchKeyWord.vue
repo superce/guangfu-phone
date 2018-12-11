@@ -20,6 +20,7 @@ import axios from 'axios'
         keyWord:''
       }
     },
+    
     methods:{
       inputWord(){
         let kwLen = this.keyWord.trim().length
@@ -34,7 +35,7 @@ import axios from 'axios'
         let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
         axios.get(searchUrl,{
           headers:{
-            Appid:'hb_app_android',
+            Appid:'gf_app_android',
             Timestamp:date,
             Sign:'aaaa',
             vtoken:''
@@ -45,13 +46,14 @@ import axios from 'axios'
             'pagesize':10
           }
         }).then(res => {
+          console.log(res)
           this.$router.push({
-            path:'keywordlist',
+            path:'keyWordList',
             query:{
               'keywordid':res.data.data.list
             }
           })
-            this.keyWord = ''
+          this.keyWord = ''
         }).catch(e => {
           alert('搜索失败2')
           this.keyWord = ''

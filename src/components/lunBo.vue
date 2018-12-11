@@ -2,7 +2,7 @@
   <div class="lun_bo">
     <wc-swiper class="swiper" :duration="1000">
       <wc-slide v-for="(s,index) in listMsg" :key="index">
-        <router-link :to="{name:'liveDetailNews',params:{id:s.id}}">
+        <router-link :to="{name:'liveDetail',params:{id:s.id}}">
           <img :src="s.headImg" :alt="s.title">
           <p><span>{{ s.title }}</span></p>
         </router-link>
@@ -12,9 +12,44 @@
 </template>
 
 <script>
+import axios from 'axios'
   export default {
-    props:['listMsg'],
+    // props:['listMsg'],
     name:'lunBo',
+    data(){
+      return{
+        listMsg:''
+      }
+    },
+    created(){
+      this.getlist()
+    },
+    methods:{
+      getlist(){
+        let date = new Date(new Date()).getTime();
+        let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
+        axios.get(getNewsListUrl,{
+            headers:{
+            Appid:'gf_app_android',
+            Timestamp:date,
+            Sign:'aaaa',
+            vtoken:''
+          },
+            params:{
+              'channelid':1003,
+              'isUp':1,
+              'maxid':0,
+              'minid':0,
+              'deviceId':'726607C0-233E-4EA4-8FAB-F3D80454ADB3',
+              'pagesize':3
+            }
+          })
+          .then(res => {
+            this.listMsg = res.data.data.items          
+          })
+          .catch(e => alert('新闻加载失败'))
+      }
+    }
   }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="download">
-    <a href="">立即下载</a>
+    <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.yiqi21.guangfu&ckey=CK1375908563872" target="_blank">立即下载</a>
   </div>
 </template>
 <script>

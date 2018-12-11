@@ -6,26 +6,34 @@
           <img src="../assets/images/guangfu.jpg" alt="">
           <router-link to="/down-load">打开</router-link>
         </div>
-        <router-view :live='liveD'></router-view>
+        
+         <div class="banner">
+          <img :src="liveD.topic.image">
+          <div class="ban">
+            <p>{{ liveD.topic.content }}</p>
+            <span v-for="(tab,index) in liveD.tags" :key="index">{{ tab.item2 }}</span>
+          </div>
+        </div>
+        <Loading v-if="loading"/>
         <div class="puclic" v-for="(tag,index) in liveD.tags" :key="index">
           <div class="h4">
             <h4>{{ tag.item2 }}</h4>
           </div>
           <ul class="list">
             <li v-for='(list,index) in liveD.newslist' :key='index'>
-              <router-link :to="{name:'liveDetailNews',params:{id:list.id}}" v-if="tag.item1 == list.tagid">
+              <router-link :to="{name:'DetailNews',params:{id:list.id,icon:list.headImg}}" v-if="tag.item1 == list.tagid">
                 <div class="left">
                 <h6>{{ list.title }}</h6>
-                <p><span class="see">{{ list.source }}</span><span class="data">{{ list.indate }}</span></p>
+                <p><span class="see">{{ list.source }}</span><span class="data">{{ timeFn(list) }}</span></p>
                 </div>
                 <div class="right">
                   <img :src="list.headimg" :alt="list.title">
                 </div>
               </router-link>
-              <router-link :to="{name:'liveDetailNews',params:{id:list.id}}" v-else="tag.item2 == list.tagid">
+              <router-link :to="{name:'DetailNews',params:{id:list.id,icon:list.headImg}}" v-else>
                 <div class="left">
                 <h6>{{ list.title }}</h6>
-                <p><span class="see">{{ list.source }}</span><span class="data">{{ list.indate }}</span></p>
+                <p><span class="see">{{ list.source }}</span><span class="data">{{ timeFn(list) }}</span></p>
                 </div>
                 <div class="right">
                   <img :src="list.headimg" :alt="list.title">
@@ -43,18 +51,17 @@
   </div>
 </template>
 <script>
-import liveDetailNews from './liveDetailNews'
 import More from './more'
 import axios from 'axios'
-// import Loading from './Loading'
+import Loading from './Loading'
   export default {
     components:{
-      More,
-      liveDetailNews
+      More,Loading
     },
     name:'liveDetail',
     data (){
       return{
+        loading:true,
         open:"打开app阅读全文",
         setHeight:false,
         liveD:''
@@ -77,7 +84,7 @@ import axios from 'axios'
         let getNewsListUrl = 'https://api.dltoutiao.com/api/News/TopicNews'
         axios.get(getNewsListUrl,{
             headers:{
-            Appid:'hb_app_android',
+            Appid:'gf_app_android',
             Timestamp:date,
             Sign:'aaaa',
             vtoken:''
@@ -87,10 +94,33 @@ import axios from 'axios'
           }
         }).then(res => {
           console.log(res.data.data)
+          this.loading = false
           this.liveD = res.data.data
-          // this.loading = false
         }).catch(e => alert(e))
-      }
+      },
+      timeFn(time) {
+        //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+        var dateBegin = new Date(time.indate.replace(/-/g, "/"));//将-转化为/，使用new Date
+        var dateEnd = new Date();//获取当前时间
+        var dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
+        var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+        var leave1=dateDiff%(24*3600*1000)    //计算天数后剩余的毫秒数
+        var hours=Math.floor(leave1/(3600*1000))//计算出小时数
+        //计算相差分钟数
+        var leave2=leave1%(3600*1000)    //计算小时数后剩余的毫秒数
+        var minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
+        //计算相差秒数
+        var leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
+        var seconds=Math.round(leave3/1000)
+        // console.log(" 相差 "+dayDiff+"天 "+hours+"小时 "+minutes+" 分钟"+seconds+" 秒")
+        // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
+        //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
+
+        if(dayDiff >= 1) return dayDiff + '天以前'
+        if(hours < 24 && hours >= 1 ) return hours + '小时以前'
+        if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
+        if(seconds < 60 ) return '刚刚'
+    }
     }
   }
 </script>
@@ -128,7 +158,32 @@ import axios from 'axios'
   .detail-height{
     height: auto;
   }
- 
+ .banner{
+    width:100%;
+    margin-top: 2.3rem;
+  }
+  .banner .ban{
+    width: 17.5rem;
+    margin: 0 auto;
+  }
+  .banner img{
+    width: 100%;
+  }
+  .banner p{
+    font-size: .8rem;
+    color:#000;
+    line-height: 1.1rem;
+    margin-bottom: .5rem;
+    font-family: "Microsoft Yahei Simhei";
+  }
+  .banner span{
+    font-size: .7rem;
+    color:#333;
+    border-radius: .4rem;
+    border: 1px solid #000;
+    margin:0 .3rem;
+    padding:.1rem .3rem;
+  }
 .puclic{
   margin-top: 1rem;
 }

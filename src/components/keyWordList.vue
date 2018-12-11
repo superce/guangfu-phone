@@ -3,7 +3,7 @@
     <ul v-if="keyList">
       <li v-for="(data,index) in keyList" :key="index">
         <!-- 左右 -->
-        <router-link class='left-right' :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList.length < 3 && data.imageList.length >= 1 && data.imageList != null">
+        <router-link class='left-right' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList.length < 3 && data.imageList.length >= 1 && data.imageList != null">
           <div class="left" >
             <h4>{{ data.title }}</h4>
             <p><span>{{data.source}}</span><span>{{ data.indate }}</span></p>
@@ -13,25 +13,29 @@
           </div>
         </router-link>
         <!-- 一个大图 -->
-        <router-link class='one' :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null && 3 > data.imageList.length >= 1 && data.imageList != null">
+        <router-link class='one' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null && data.imageList.length < 3 &&  data.imageList.length >= 1 && data.imageList != null">
           <h4>{{data.title}}</h4>
           <img :src="data.imageList" :alt="data.title">
           <p><span>{{data.source}}</span><span>{{ data.indate }}</span> </p>
         </router-link>
         <!-- 三个小图 -->
-        <router-link class="third" :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else>
+        <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
           <h4>{{ data.title }}</h4>
           <dd>
-            <dl v-for="(img,index) in splitImages(data)"><img :src="img" :alt="data.title"></dl>
+            <dl><img :src="splitImages(data)[0]" :alt="data.title"></dl>
           </dd>
           <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
+        </router-link>
+        <router-link :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else>
+          <h4>{{data.title}}</h4>
+          <p><span>{{data.source}}</span><span>{{timeFn(data)}}</span></p>
         </router-link>
       </li>
     </ul>
     <ul v-else>
       <li v-for="(data,index) in keyword" :key="index">
         <!-- 左右 -->
-        <router-link class='left-right' :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList.length < 3 && data.imageList.length >= 1 && data.imageList != null">
+        <router-link class='left-right' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList.length < 3 && data.imageList.length >= 1 && data.imageList != null">
           <div class="left" >
             <h4>{{ data.title }}</h4>
             <p><span>{{data.source}}</span><span>{{ data.indate }}</span></p>
@@ -41,18 +45,22 @@
           </div>
         </router-link>
         <!-- 一个大图 -->
-        <router-link class='one' :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null && 3 > data.imageList.length >= 1 && data.imageList != null">
+        <router-link class='one' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null &&  data.imageList.length < 3 && data.imageList.length >= 1 && data.imageList != null">
           <h4>{{data.title}}</h4>
           <img :src="data.imageList" :alt="data.title">
           <p><span>{{data.source}}</span><span>{{ data.indate }}</span> </p>
         </router-link>
         <!-- 三个小图 -->
-        <router-link class="third" :to="{name:'Detail',params:{id:data.id,icon:data.headImg}}" v-else>
+        <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
           <h4>{{ data.title }}</h4>
           <dd>
-            <dl v-for="(img,index) in splitImages(data)"><img :src="img" :alt="data.title"></dl>
+            <dl><img :src="splitImages(data)[0]" :alt="data.title"></dl>
           </dd>
           <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
+        </router-link>
+        <router-link :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else>
+          <h4>{{data.title}}</h4>
+          <p><span>{{data.source}}</span><span>{{timeFn(data)}}</span></p>
         </router-link>
       </li>
     </ul>
@@ -67,6 +75,13 @@ import axios from 'axios'
       return{
         keyList:this.$route.query.keywordid,
         keyword:this.$route.query.keyword,
+      }
+    },
+    watch:{
+      '$route'(keywordlist,keyword){
+        if(this.$route.query.keywordid){
+          this.keyList = this.$route.query.keywordid
+        }
       }
     },
     methods:{
@@ -93,10 +108,10 @@ import axios from 'axios'
         // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
         //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
 
-        if(seconds < 60 ) return '刚刚'
-        if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
-        if(hours < 24 && hours >= 1 ) return hours + '小时以前'
         if(dayDiff >= 1) return dayDiff + '天以前'
+        if(hours < 24 && hours >= 1 ) return hours + '小时以前'
+        if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
+        if(seconds < 60 ) return '刚刚'
     }
     }
   }
@@ -157,7 +172,7 @@ import axios from 'axios'
     margin-top: .5rem;
   }
   .keywordlist ul .third dl{
-    width: 33%;
+    width: 100%;
     height: 3.75rem;
     overflow: hidden;
     margin:0 1%;
