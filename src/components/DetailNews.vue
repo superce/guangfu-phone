@@ -2,11 +2,12 @@
   <div class="detail-content">
     <h4>{{ detailList.title }}</h4>
     <p>
-      <img :src="this.$route.params.icon" alt="">
+      <img v-lazy="this.$route.params.icon" alt="">
       <span class="author">{{ detailList.source }}</span>
+      <img v-if="detailList.user != null && detailList.user.isVip == 1" src="../assets/images/4.png" alt="" class="v">
       <span class="data">{{ detailList.indate }}</span>
     </p>
-    <img :src="this.$route.params.icon" :alt="detailList.title" class="big-img">
+    <img v-lazy="this.$route.params.icon" :alt="detailList.title" class="big-img">
     <div class="intro-box">
       <div :class="{'intro' : !setHeight, 'set-height' : setHeight}" >
         <div v-html="detailList.content"></div>
@@ -60,6 +61,8 @@ export default {
           })
           .then(res => {
             this.detailList = res.data.data
+            console.log(res.data.data)
+            console.log(123)
             this.loading = false
             document.body.scrollTop = 0
             document.documentElement.scrollTop = 0
@@ -154,5 +157,9 @@ export default {
   text-align: center;
   line-height: 1.5rem;
   margin-top: 1rem;
+}
+.v{
+  width: .8rem !important;
+  height: 1rem !important;
 }
 </style>

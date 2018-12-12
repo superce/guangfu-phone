@@ -3,7 +3,7 @@
     <wc-swiper class="swiper" :duration="1000">
       <wc-slide v-for="(s,index) in listMsg" :key="index">
         <router-link :to="{name:'liveDetail',params:{id:s.id}}">
-          <img :src="s.headImg" :alt="s.title">
+          <img v-lazy="s.headImg" :alt="s.title">
           <p><span>{{ s.title }}</span></p>
         </router-link>
       </wc-slide>

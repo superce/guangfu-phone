@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="live-title">
+    <!-- <div class="live-title">
       <h4>直播</h4>
-    </div>
+    </div> -->
     <lunBo class="lunbo" />
     <div class="live-content" >
       <div class="content">
@@ -21,7 +21,7 @@
               </p>
               </div>
               <div class="right">
-                <img :src="list.headImg" :alt="list.title">
+                <img v-lazy="list.headImg" :alt="list.title">
               </div>
             </router-link>
           </li>
@@ -88,11 +88,9 @@
     },
     gundong(){
       let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
-      console.log(scrollTop)
       let wHeight = window.innerHeight 
       let scrollHeight = document.body.scrollHeight
-      if(scrollTop + wHeight >= scrollHeight && this.REQS == true){
-        console.log('执行执行')
+      if(scrollTop + wHeight >= scrollHeight - 50 && this.REQS == true){
           this.loading = true
           this.REQS = false
           let date = new Date(new Date()).getTime();
@@ -121,7 +119,6 @@
               for(var i = 0;i<arr.length;i++){
                 this.dataMsg.push(arr[i])
               }
-              console.log(this.dataMsg)
               this.max = res.data.data.minid
               this.min = this.max - 10
               console.log(this.max + '---' + this.min + '加载成功')
@@ -162,7 +159,7 @@
 }
 </script>
 <style scoped>
-.live-title{
+/* .live-title{
   width: 100%;
   background: #fff;
   position: fixed;
@@ -181,7 +178,7 @@
 }
 .lunbo{
   margin-top: 2.2rem;
-}
+} */
 .live-content {
   width: 17.5rem;
   margin: 0 auto;
@@ -232,9 +229,11 @@
 }
 .live-content .list .right{
   width: 5.75rem;
+  height: 3.5rem;
 }
 .live-content .list .right img{
   width: 100%;
+  height: 100%;
 }
 .wc-pagination{
   justify-content: flex-end;

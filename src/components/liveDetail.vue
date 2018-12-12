@@ -8,7 +8,7 @@
         </div>
         
          <div class="banner">
-          <img :src="liveD.topic.image">
+          <img v-lazy="liveD.topic.image">
           <div class="ban">
             <p>{{ liveD.topic.content }}</p>
             <span v-for="(tab,index) in liveD.tags" :key="index">{{ tab.item2 }}</span>
@@ -27,7 +27,7 @@
                 <p><span class="see">{{ list.source }}</span><span class="data">{{ timeFn(list) }}</span></p>
                 </div>
                 <div class="right">
-                  <img :src="list.headimg" :alt="list.title">
+                  <img v-lazy="list.headimg" :alt="list.title">
                 </div>
               </router-link>
               <router-link :to="{name:'DetailNews',params:{id:list.id,icon:list.headImg}}" v-else>
@@ -36,7 +36,7 @@
                 <p><span class="see">{{ list.source }}</span><span class="data">{{ timeFn(list) }}</span></p>
                 </div>
                 <div class="right">
-                  <img :src="list.headimg" :alt="list.title">
+                  <img v-lazy="list.headimg" :alt="list.title">
                 </div>
               </router-link>
             </li>

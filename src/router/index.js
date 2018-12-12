@@ -29,7 +29,12 @@ export default new Router({
           path:"home-list/:id",
           name:'homeList',
           component:homeList
-        }
+        },
+        {
+          path:'/livebroadcast',
+          name: 'liveBroad',
+          component:liveBroad
+        },
       ]
     },
     {
@@ -68,11 +73,7 @@ export default new Router({
       name: 'myChannel',
       component:myChannel
     },
-    {
-      path:'/livebroadcast',
-      name: 'liveBroad',
-      component:liveBroad
-    },
+    
     {
       path:'/live-detail/:id',
       name:'liveDetail',

@@ -7,7 +7,15 @@ import './assets/css/reset.css'
 import './assets/font/iconfont.css'
 import wcSwiper from 'wc-swiper'
 import 'wc-swiper/style.css'
+import VueLazyload from 'vue-lazyload'
+
 Vue.use(wcSwiper);
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: './assets/images/logo.png',
+  loading: './assets/images/logo.png',
+  attempt: 1
+})
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */

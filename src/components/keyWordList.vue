@@ -9,20 +9,20 @@
             <p><span>{{data.source}}</span><span>{{ data.indate }}</span></p>
           </div>
           <div class="right">
-            <img :src="data.imageList" :alt="data.title">
+            <img v-lazy="data.imageList" :alt="data.title">
           </div>
         </router-link>
         <!-- 一个大图 -->
         <router-link class='one' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null && data.imageList.length < 3 &&  data.imageList.length >= 1 && data.imageList != null">
           <h4>{{data.title}}</h4>
-          <img :src="data.imageList" :alt="data.title">
+          <img v-lazy="data.imageList" :alt="data.title">
           <p><span>{{data.source}}</span><span>{{ data.indate }}</span> </p>
         </router-link>
         <!-- 三个小图 -->
         <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
           <h4>{{ data.title }}</h4>
           <dd>
-            <dl><img :src="splitImages(data)[0]" :alt="data.title"></dl>
+            <dl><img v-lazy="splitImages(data)[0]" :alt="data.title"></dl>
           </dd>
           <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
         </router-link>
@@ -41,20 +41,20 @@
             <p><span>{{data.source}}</span><span>{{ data.indate }}</span></p>
           </div>
           <div class="right">
-            <img :src="data.imageList" :alt="data.title">
+            <img v-lazy="data.imageList" :alt="data.title">
           </div>
         </router-link>
         <!-- 一个大图 -->
         <router-link class='one' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null &&  data.imageList.length < 3 && data.imageList.length >= 1 && data.imageList != null">
           <h4>{{data.title}}</h4>
-          <img :src="data.imageList" :alt="data.title">
+          <img v-lazy="data.imageList" :alt="data.title">
           <p><span>{{data.source}}</span><span>{{ data.indate }}</span> </p>
         </router-link>
         <!-- 三个小图 -->
         <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
           <h4>{{ data.title }}</h4>
           <dd>
-            <dl><img :src="splitImages(data)[0]" :alt="data.title"></dl>
+            <dl><img v-lazy="splitImages(data)[0]" :alt="data.title"></dl>
           </dd>
           <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{data.indate}}</span></p>
         </router-link>

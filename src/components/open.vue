@@ -1,8 +1,8 @@
 <template>
   <div class="open">
     <div class="open-box">
-      <img src="../assets/images/6.png" alt="">
-      <router-link to="/down-load">打开</router-link>
+      <router-link to="/"><img src="../assets/images/6.png" alt=""></router-link>
+      <router-link to="/down-load" class="a">打开</router-link>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
 .open img{
   width: 5rem;
 }
-.open-box a{
+.open-box .a{
   font-size: .7rem;
   color:#fff;
   background: #5c8dfe;

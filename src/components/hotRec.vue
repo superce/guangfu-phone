@@ -4,58 +4,68 @@
     <h5>热门推荐</h5>
     <ul>
       <li v-for="(hot,index) in hotRec" :key="index">
-        <router-link :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-if="hot.showTempate == 0 && hot.user == null && hot.imageList != ''">
-          <div class="left">
-            <p>{{ hot.title }}</p>
-            <div class="tab">
-              <span class="openapp">打开APP</span>
-              <span>{{ hot.source }}</span>
-              <span>{{ timeFn(hot) }}</span>
+        <div class="li" v-if="hot.showTempate == 0 && hot.user == null && hot.imageList != ''">
+            <div class="left">
+              <router-link :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}">
+                <p>{{ hot.title }}</p>
+              </router-link>
+              <div class="tab">
+              <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.yiqi21.guangfu&ckey=CK1375908563872" class="openapp">打开APP</a>
+                <span class="margin">{{ hot.source }}</span>
+                <span>{{ timeFn(hot) }}</span>
+              </div>
             </div>
-          </div>
-          <div class="right">
-            <img :src="hot.imageList" />
-          </div>
-        </router-link>
-        <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else-if="hot.showTempate == 3 && hot.user == null && hot.imageList != ''">
-          <p>{{ hot.title }}</p>
-          <dl>
-            <dd v-for="(img,index) in splitImg(hot)" :key="index"><img :src="img" alt=""></dd>
-          </dl>
+            <div class="right">
+              <router-link :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}">
+                <img v-lazy="hot.imageList" />
+              </router-link>
+            </div>
+        </div>
+        <div v-else-if="hot.showTempate == 3 && hot.user == null && hot.imageList != ''">
+          <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}">
+            <p>{{ hot.title }}</p>
+            <dl>
+              <dd><img v-lazy="splitImg(hot)[0]" alt=""></dd>
+            </dl>
+          </router-link>
           <div class="tab tabt">
-            <span class="openapp">打开APP</span>
-            <span>{{hot.source}}<img src="../assets/images/4.png" alt=""></span>
+            <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.yiqi21.guangfu&ckey=CK1375908563872" class="openapp">打开APP</a>
+            <span class="margin">{{hot.source}}<img src="../assets/images/4.png" alt=""></span>
             <span>{{timeFn(hot)}}</span>
           </div>
-        </router-link>
-        <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else-if="hot.showTempate == 0 && hot.user != null && hot.imageList.length == 0">
-          <p>{{hot.title}}</p>
+        </div>
+        <div v-else-if="hot.showTempate == 0 && hot.user != null && hot.imageList.length == 0">
+          <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" >
+            <p>{{hot.title}}</p>
+          </router-link>
           <div class="tab tabt">
-            <span class="openapp">打开APP</span>
-            <span>{{hot.source}}</span>
+            <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.yiqi21.guangfu&ckey=CK1375908563872" class="openapp">打开APP</a>
+            <span class="margin">{{hot.source}}</span>
             <span>{{timeFn(hot)}}</span>
           </div>
-        </router-link>
-        <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}" v-else>
-          <p>{{hot.title}}</p>
+        </div>
+        <div v-else>
+          <router-link class='hot-a' :to="{name:'DetailNews',params:{id:hot.id,icon:hot.headImg}}">
+            <p>{{hot.title}}</p>
+          </router-link>
           <div class="tab tabt">
-            <span class="openapp">打开APP</span>
-            <span>{{hot.source}}</span>
+            <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.yiqi21.guangfu&ckey=CK1375908563872" class="openapp">打开APP</a>
+            <span class="margin">{{hot.source}}</span>
             <span>{{timeFn(hot)}}</span>
           </div>
-        </router-link>
+        </div>
       </li>
     </ul>
     <div class="wechat">
       <img src="../assets/images/750-250.png" alt="">
     </div>
   </div>
-  <div class="pinglun" id="pinglun"><a class="pinglun_con" href="http://gftoutiao.com/gfgroup.html">打开一起光伏，参与文章讨论</a></div>
+  <div class="pinglun" id="pinglun"><a class="pinglun_con" href="http://a.app.qq.com/o/simple.jsp?pkgname=com.yiqi21.guangfu&ckey=CK1375908563872">打开一起光伏，参与文章讨论</a></div>
 </div>
 </template>
 <script>
 import axios from 'axios'
-  export default {
+export default {
   name:'hotRec',
   data () {
     return {
@@ -139,7 +149,7 @@ import axios from 'axios'
   border-bottom: 1px solid #eeeeee;
   margin-left: 0;
 }
-.hot-rec li a{
+.hot-rec li .li{
   display: flex;
   justify-content: space-between;
 }
@@ -147,20 +157,24 @@ import axios from 'axios'
   width:11.25rem;
 }
 .hot-rec li .left p{
-  height: 2.1rem;
+  height: 2.2rem;
   overflow: hidden;
   font-size: .8rem;
   color:#000000;
 }
 .hot-rec li .tab{
   margin-top: .5rem;
+  display: flex
 }
 .hot-rec li .tabt{
-  margin-top: 0;
+  margin-top: .2rem;
 }
 .hot-rec li span{
   font-size: .6rem;
   color:#a9a8a8;
+}
+.hot-rec li span.margin{
+  margin:0 .3rem;
 }
 .hot-rec li span img{
   width: .4rem;
@@ -168,6 +182,7 @@ import axios from 'axios'
   margin: 0 -.1rem 0 0;
 }
 .hot-rec li .openapp{
+  font-size: .6rem;
   color:#f85959;
 }
 .hot-rec li .right{
@@ -192,7 +207,7 @@ import axios from 'axios'
   margin-top: .8rem;
 }
 .hot-rec li .hot-a dl dd{
-  width:33%;
+  width:100%;
   height: 3.75rem;
   margin:0 1%;
 }

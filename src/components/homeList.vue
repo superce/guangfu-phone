@@ -7,10 +7,10 @@
             <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}">
               <div class="left" >
                 <h4>{{ top.title }}</h4>
-                <p><span class="top">置顶</span><span>{{top.source}}</span><span>{{ timeFn(data) }}</span></p>
+                <p><span class="top">置顶</span><span>{{top.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(data) }}</span></p>
               </div>
               <div class="right">
-                <img :src="top.imageList" :alt="top.title">
+                <img v-lazy="top.imageList" :alt="top.title">
               </div>
             </router-link>
           </li>
@@ -18,29 +18,29 @@
             <router-link class='left-right' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList != ''">
               <div class="left" >
                 <h4>{{ data.title }}</h4>
-                <p><span>{{data.source}}</span><span>{{ timeFn(data) }}</span></p>
+                <p><span>{{data.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(data) }}</span></p>
               </div>
               <div class="right">
-                <img :src="data.imageList" :alt="data.title">
+                <img v-lazy="data.imageList" :alt="data.title">
               </div>
             </router-link>
             <router-link class='one' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 1 && data.user != null  && data.imageList != ''">
               <h4>{{data.title}}</h4>
-              <img :src="data.imageList" :alt="data.title">
-              <p><span>{{data.source}}</span><span>{{ timeFn(data) }}</span> </p>
+              <img v-lazy="data.imageList" :alt="data.title">
+              <p><span>{{data.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(data) }}</span> </p>
             </router-link>
             <router-link class="third" :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else-if="data.showTempate == 3 && data.user == null && data.imageList != ''">
               <h4>{{ data.title }}</h4>
               <dd>
                 <dl>
-                  <img :src="getImage(data)[0]" alt="">
+                  <img v-lazy="getImage(data)[0]" alt="">
                 </dl>
               </dd>
-              <p><span>{{data.source}}</span><img src="../assets/images/4.png" alt=""><span>{{timeFn(data)}}</span></p>
+              <p><span>{{data.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{timeFn(data)}}</span></p>
             </router-link>
             <router-link :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-else>
               <h4>{{data.title}}</h4>
-              <p><span>{{data.source}}</span><span>{{timeFn(data)}}</span></p>
+              <p><span>{{data.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{timeFn(data)}}</span></p>
             </router-link>  
           </li>
           <Loading v-if='loading' class="ab"/>
@@ -133,10 +133,11 @@ export default {
         .then(res => {
           this.loading = false
           this.dataMsg = res.data.data.items
+          let scroll = document.body.scrollTop || document.documentElement.scrollTop 
+          console.log(res.data.data.items)
           this.max = res.data.data.minid;
           this.min = this.max - 10
-          document.body.scrollTop = 0
-          document.documentElement.scrollTop = 0
+          scroll = 0
           console.log('第一次' + this.max + '----' + this.min)
             this.$nextTick(() => {
               mescroll.endSuccess()
@@ -301,6 +302,11 @@ export default {
     width: .4rem;
     height: .4rem;
     margin:0 .1rem  0 -.4rem;
+  }
+  .v{
+    width:.5rem !important;
+    height: .5rem !important;
+    margin: 0 .05rem 0 -.2rem;
   }
 </style>
 
