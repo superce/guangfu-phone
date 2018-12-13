@@ -12,8 +12,8 @@ import VueLazyload from 'vue-lazyload'
 Vue.use(wcSwiper);
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: './assets/images/logo.png',
-  loading: './assets/images/logo.png',
+  error: 'http://guangfu.yiqi21.com/static/images/logo.png',
+  // loading: 'http://guangfu.yiqi21.com/static/images/logo.png',
   attempt: 3
 })
 

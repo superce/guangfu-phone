@@ -6,12 +6,13 @@
           <img src="../assets/images/guangfu.jpg" alt="">
           <router-link to="/down-load">打开</router-link>
         </div>
-        
          <div class="banner">
           <img v-lazy="liveD.topic.image">
           <div class="ban">
             <p>{{ liveD.topic.content }}</p>
-            <span v-for="(tab,index) in liveD.tags" :key="index">{{ tab.item2 }}</span>
+            <div class="span">
+              <span v-for="(tab,index) in liveD.tags" :key="index">{{ tab.item2 }}</span>
+            </div>
           </div>
         </div>
         <Loading v-if="loading"/>
@@ -173,15 +174,19 @@ import Loading from './Loading'
     font-size: .8rem;
     color:#000;
     line-height: 1.1rem;
-    margin-bottom: .5rem;
     font-family: "Microsoft Yahei Simhei";
+  }
+  .span{
+    display: flex;
+    flex-wrap: wrap;
   }
   .banner span{
     font-size: .7rem;
     color:#333;
     border-radius: .4rem;
     border: 1px solid #000;
-    margin:0 .3rem;
+    margin:0 .2rem;
+    margin-top: .5rem;
     padding:.1rem .3rem;
   }
 .puclic{
