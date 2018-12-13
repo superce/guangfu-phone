@@ -2,12 +2,13 @@
   <div class="detail-content">
     <h4>{{ detailList.title }}</h4>
     <p>
-      <img v-lazy="this.$route.params.icon" alt="">
+      <img v-if="detailList.user != null && detailList.user.headImg != ''" v-lazy="detailList.user.headImg" alt="头像">
+      <img v-else v-lazy="this.$route.params.icon" alt="">
       <span class="author">{{ detailList.source }}</span>
       <img v-if="detailList.user != null && detailList.user.isVip == 1" src="../assets/images/4.png" alt="" class="v">
       <span class="data">{{ detailList.indate }}</span>
-    </p>
-    <img v-lazy="this.$route.params.icon" :alt="detailList.title" class="big-img">
+    </p> 
+    <img v-if="this.$route.params.icon != null" v-lazy="this.$route.params.icon" :alt="detailList.title" class="big-img">
     <div class="intro-box">
       <div :class="{'intro' : !setHeight, 'set-height' : setHeight}" >
         <div v-html="detailList.content"></div>
@@ -44,7 +45,7 @@ export default {
   methods:{
     height(){
         this.setHeight = !this.setHeight
-        this.open = '打开一起光伏，阅读体验更加'
+        this.open = '打开一起光伏, 阅读更佳'
       },
     getDetail(){
         let data = this.$route.params.id
@@ -87,8 +88,8 @@ export default {
   margin: 0;
 }
 .detail-content p img{
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   display: block;
   border-radius: 50%;
   overflow: hidden;
@@ -96,7 +97,7 @@ export default {
 .detail-content p .author{
   font-size: .7rem;
   color:#333333;
-  line-height: 1.5rem;
+  line-height: 1.9rem;
   margin-left: .25rem;
 }
 .detail-content p .data{
@@ -104,7 +105,7 @@ export default {
   text-align: right;
   font-size: .6rem;
   color:#999999;
-  line-height: 1.5rem;
+  line-height: 1.9rem;
 }
 .detail-content .big-img{
   width: 100%;
@@ -159,7 +160,10 @@ export default {
   margin-top: 1rem;
 }
 .v{
-  width: .8rem !important;
-  height: 1rem !important;
+      width: .8rem !important;
+    height: 1.1rem !important;
+    margin-left: .1rem;
+    margin-top: .6rem;
+    border-radius: 0 !important;
 }
 </style>

@@ -14,7 +14,7 @@ Vue.use(VueLazyload, {
   preLoad: 1.3,
   error: './assets/images/logo.png',
   loading: './assets/images/logo.png',
-  attempt: 1
+  attempt: 3
 })
 
 Vue.config.productionTip = false

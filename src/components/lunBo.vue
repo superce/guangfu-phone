@@ -1,9 +1,9 @@
 <template>
   <div class="lun_bo">
-    <wc-swiper class="swiper" :duration="1000">
+    <wc-swiper class="swiper" :duration="1000" v-if='listMsg != ""'>
       <wc-slide v-for="(s,index) in listMsg" :key="index">
         <router-link :to="{name:'liveDetail',params:{id:s.id}}">
-          <img v-lazy="s.headImg" :alt="s.title">
+          <img v-lazy="s.headImg">
           <p><span>{{ s.title }}</span></p>
         </router-link>
       </wc-slide>
@@ -81,7 +81,7 @@ import axios from 'axios'
   }
   .wc-pagination{
     bottom:0px !important;
-    justify-content: flex-end;
+    justify-content: flex-end !important;
   }
 </style>
 
