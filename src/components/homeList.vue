@@ -1,6 +1,6 @@
 <template>
   <div class="home_content">
-    <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp' @init="mescrollInit">
+    <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp'>
       <div class="home-down">
         <ul>
           <li v-for="(top,index) in topMsg" :key="index" v-if="top.showTempate == 11">
@@ -64,11 +64,12 @@ export default {
       loading:true,
       mescroll: null, // mescroll实例对象
       mescrollDown:{
-        callback:this.getNewsList
+        callback:this.upCallback
       }, //下拉刷新的配置
       mescrollUp:{
-        callback: this.upCallback
+        callback: this.downCallback
       },
+      REQS:true,
       dataMsg:'',
       images:'',
       topMsg:'',
@@ -80,6 +81,12 @@ export default {
     this.getNewsList()
     this.top()
   },
+  // mounted(){
+  //   window.addEventListener('scroll',this.gundong)
+  // },
+  // beforeDestroy(){
+  //   window.removeEventListener("scroll",this.gundong)
+  // },
   watch:{
     "$route": ['getNewsList','top']//监听路由变化，重新渲染数据
   },
@@ -105,13 +112,13 @@ export default {
         })
         .catch(e => alert('获取置顶新闻失败'))
     },
-    mescrollInit (mescroll) {
-      this.mescroll = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
-    },
+    // mescrollInit (mescroll) {
+    //   this.mescroll = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
+    // },
     // 列表数据
-    getNewsList(mescroll){
+    getNewsList(){
       let data = this.$route.params.id
-      console.log(data)
+      console.log(data + '频道ID')
       let date = new Date(new Date()).getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
       axios.get(getNewsListUrl,{
@@ -133,15 +140,11 @@ export default {
         .then(res => {
           this.loading = false
           this.dataMsg = res.data.data.items
-          let scroll = document.body.scrollTop || document.documentElement.scrollTop 
-          console.log(res.data.data.items)
+          // let scroll = document.body.scrollTop || document.documentElement.scrollTop 
           this.max = res.data.data.minid;
           this.min = this.max - 10
-          scroll = 0
-          console.log('第一次' + this.max + '----' + this.min)
-            this.$nextTick(() => {
-              mescroll.endSuccess()
-            })
+          // scroll = 0
+          // document.body.scrollHeight = 0
             
         })
         .catch(e => alert('请求新闻失败'))
@@ -149,11 +152,43 @@ export default {
     getImage(images){
       return images.imageList.split("|")
     },
+    // 下拉刷新
+    upCallback(mescroll){
+      let data = this.$route.params.id
+      console.log(data + '频道')
+      let date = new Date(new Date()).getTime();
+      let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
+      axios.get(getNewsListUrl,{
+          headers:{
+          Appid:'hb_app_android',
+          Timestamp:date,
+          Sign:'aaaa',
+          vtoken:''
+        },
+          params:{
+            'channelid':data,
+            'isUp':1,
+            'maxid':0,
+            'minid':0,
+            'deviceId':'726607C0-233E-4EA4-8FAB-F3D80454ADB3',
+            'pagesize':10
+          }
+        })
+        .then(res => {
+          this.dataMsg = res.data.data.items
+          // 数据渲染成功后,隐藏下拉刷新的状态
+          this.$nextTick(() => {
+            mescroll.endSuccess()
+          })
+        
+        })
+        .catch(e => alert('请求新闻失败'))
+    },
     // mescroll组件初始化的回调,可获取到mescroll对象 (如果this.mescroll并没有使用到,可不用写mescrollInit)
     mescrollInit (mescroll) {
       this.mescroll = mescroll
     },
-    upCallback (page, mescroll) {
+    downCallback (page, mescroll) {
       let data = this.$route.params.id
       let date = new Date(new Date()).getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
@@ -175,7 +210,6 @@ export default {
         }).then((res) => {
         //请求的列表数据
         console.log(this.max + '----' + this.min)
-        console.log(res.data.data)
         let arr = res.data.data.items
         // 如果是第一页需手动制空列表
         if (page.num === 1) this.dataMsg = []
@@ -252,7 +286,7 @@ export default {
   .home_content ul li h4{
     max-height: 2.4rem;
     overflow: hidden;
-    font-size: .8rem;
+    font-size: .9rem;
     line-height: 1.2rem;
     color:#222222;
     font-weight: normal;

@@ -23,13 +23,6 @@ export default {
   methods:{
     back(){
       this.$router.go(-1)
-    },
-    tab(index){
-      if(index == 1){
-        this.$router.push({
-          name:'liveBroad'
-        })
-      }
     }
   }
 }

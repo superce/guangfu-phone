@@ -42,7 +42,6 @@ import axios from 'axios'
         })
         .then(res => {
           this.word = res.data.data
-          // console.log(res.data.data)
           this.loading = false
         })
         .catch(e => alert('关键词加载失败'))

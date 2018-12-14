@@ -14,7 +14,6 @@
 <script>
 import axios from 'axios'
   export default {
-    // props:['listMsg'],
     name:'lunBo',
     data(){
       return{

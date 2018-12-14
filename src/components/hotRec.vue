@@ -93,7 +93,6 @@ export default {
           }
         }).then(res => {
           this.hotRec = res.data.data.list
-          console.log(this.hotRec)
         })
         .catch(e => alert(e))
       },
@@ -192,6 +191,8 @@ export default {
 .hot-rec li .right img{
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 .hot-rec li .hot-a{
   display: block

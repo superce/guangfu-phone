@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <div class="live-title">
-      <h4>直播</h4>
-    </div> -->
     <lunBo class="lunbo" />
     <div class="live-content" >
       <div class="content">
@@ -87,7 +84,7 @@
         .catch(e => alert('新闻加载失败'))
     },
     gundong(){
-      let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+      let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
       let wHeight = window.innerHeight 
       let scrollHeight = document.body.scrollHeight
       if(scrollTop + wHeight >= scrollHeight - 50 && this.REQS == true){
@@ -159,26 +156,6 @@
 }
 </script>
 <style scoped>
-/* .live-title{
-  width: 100%;
-  background: #fff;
-  position: fixed;
-  top:0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  box-shadow: 0 1px 4px 1px #acacac;
-}
-.live-title h4{
-  font-size: 1rem;
-  color:#0d0d0d;
-  text-align: center;
-  line-height: 2.2rem;
-  font-family: "Microsoft Yahei SimHei";
-}
-.lunbo{
-  margin-top: 2.2rem;
-} */
 .live-content {
   width: 17.5rem;
   margin: 0 auto;
@@ -211,7 +188,7 @@
 }
 .live-content .list .left h6{
   font-weight: normal;
-  height: 2.1rem;
+  max-height: 2.2rem;
   overflow: hidden;
   font-size: .8rem;
   color:#242424;
@@ -219,7 +196,7 @@
 .live-content .list .left p{
   font-size: .6rem;
   color:#acacac;
-  margin-top: .9rem;
+  margin-top: .5rem;
 }
 .live-content .list .left p .see{
   border:1px solid #acacac;

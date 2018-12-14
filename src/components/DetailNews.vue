@@ -3,12 +3,12 @@
     <h4>{{ detailList.title }}</h4>
     <p>
       <img v-if="detailList.user != null && detailList.user.headImg != ''" v-lazy="detailList.user.headImg" alt="头像">
-      <img v-else v-lazy="this.$route.params.icon" alt="">
+      <!-- <img v-else v-lazy="this.$route.params.icon" alt=""> -->
       <span class="author">{{ detailList.source }}</span>
       <img v-if="detailList.user != null && detailList.user.isVip == 1" src="../assets/images/4.png" alt="" class="v">
       <span class="data">{{ detailList.indate }}</span>
     </p> 
-    <img v-if="this.$route.params.icon != null" v-lazy="this.$route.params.icon" :alt="detailList.title" class="big-img">
+    <!-- <img v-if="this.$route.params.icon != null" v-lazy="this.$route.params.icon" :alt="detailList.title" class="big-img"> -->
     <div class="intro-box">
       <div :class="{'intro' : !setHeight, 'set-height' : setHeight}" >
         <div v-html="detailList.content"></div>
@@ -62,8 +62,7 @@ export default {
           })
           .then(res => {
             this.detailList = res.data.data
-            console.log(res.data.data)
-            console.log(123)
+            // console.log(res.data.data)
             this.loading = false
             document.body.scrollTop = 0
             document.documentElement.scrollTop = 0
@@ -79,13 +78,17 @@ export default {
     margin: 0 auto;
 }
 .detail-content h4{
-  font-size: .9rem;
+  font-size: 1rem;
   margin:1rem 0;
   color:#333333;
 }
 .detail-content p{
   display: flex;
   margin: 0;
+  margin-bottom: .2rem;
+}
+img{
+  margin: 0;padding: 0;
 }
 .detail-content p img{
   width: 1.5rem;
@@ -97,7 +100,7 @@ export default {
 .detail-content p .author{
   font-size: .7rem;
   color:#333333;
-  line-height: 1.9rem;
+  line-height: 1.5rem;
   margin-left: .25rem;
 }
 .detail-content p .data{
@@ -105,14 +108,14 @@ export default {
   text-align: right;
   font-size: .6rem;
   color:#999999;
-  line-height: 1.9rem;
+  line-height: 1.5rem;
 }
 .detail-content .big-img{
   width: 100%;
   margin-top: 1rem;
 }
 .intro{
-  height: 20rem;
+  height: 24rem;
   overflow: hidden;
 }
 .set-height{
@@ -160,10 +163,10 @@ export default {
   margin-top: 1rem;
 }
 .v{
-      width: .8rem !important;
-    height: 1.1rem !important;
+    width: .5rem !important;
+    height: .5rem !important;
     margin-left: .1rem;
-    margin-top: .6rem;
+    margin-top: .5rem;
     border-radius: 0 !important;
 }
 </style>

@@ -29,8 +29,8 @@
   </div>
 </template>
  <script>
- import axios from 'axios'
-  export default {
+import axios from 'axios'
+export default {
    name:'Header',
    data () {
      return {
@@ -44,7 +44,7 @@
     // console.log(this.live)
     this.getNav()
   },
-   methods: {
+  methods: {
     getNav(){
       let date = new Date(new Date()).getTime();
       let channel = "https://api.dltoutiao.com/api/News/GetAllChannel"
@@ -60,12 +60,11 @@
         let arr = res.data.data
         arr.splice(1,0,this.live)
         that.nav = arr
-        // console.log(res)
         })
         .catch(e => alert('请求数据超时'))
     }
-   }
   }
+}
  </script>
  
  <style scoped>
@@ -94,7 +93,7 @@
   }
   .logo .search i{
     position: absolute;
-    top:.3rem;
+    top:.35rem;
     left:.4rem;
   }
   .icon-jiantou8{
@@ -127,11 +126,11 @@
   }
   .home_nav a{
     white-space: nowrap;
-    font-size: .75rem;
+    font-size: .8rem;
     color:#333333;
     padding: 0 .2rem;
     margin: 0 .1rem;
-    line-height: 1.53rem;
+    line-height: 1.75rem;
   } 
   .active{
     color:#65a1fc !important;

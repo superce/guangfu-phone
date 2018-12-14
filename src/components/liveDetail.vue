@@ -1,12 +1,13 @@
 <template>
   <div class="live-detail">
     <div class="live">
-      <div :class="{'detail' : !setHeight,'detail-height' : setHeight}">
+      <div id="de" :class="{'detail' : !setHeight,'detail-height' : setHeight,'detail-height' : liveD.newslist == ''}">
         <div class="top">
           <img src="../assets/images/guangfu.jpg" alt="">
           <router-link to="/down-load">打开</router-link>
         </div>
          <div class="banner">
+        <!-- {{  hideBox }} -->
           <img v-lazy="liveD.topic.image">
           <div class="ban">
             <p>{{ liveD.topic.content }}</p>
@@ -16,7 +17,7 @@
           </div>
         </div>
         <Loading v-if="loading"/>
-        <div class="puclic" v-for="(tag,index) in liveD.tags" :key="index">
+        <div class="puclic" v-for="(tag,index) in liveD.tags" :key="index" v-if="liveD.newslist != ''">
           <div class="h4">
             <h4>{{ tag.item2 }}</h4>
           </div>
@@ -44,11 +45,11 @@
           </ul>
         </div>
       </div>
-      <div class="more">
+      <div class="more" v-if="liveD.newslist != ''">
         <More class="down" @get='height' v-if="!setHeight"/>
       </div>
     </div>
-    <router-link to="/down-load" :class="{'app' : !setHeight, 'app2' : setHeight}">{{ open }}</router-link>
+    <router-link to="/down-load" :class="{'app' : !setHeight, 'app2' : setHeight}"  v-if="liveD.newslist != ''">{{ open }}</router-link>
   </div>
 </template>
 <script>
@@ -94,9 +95,9 @@ import Loading from './Loading'
             id:data
           }
         }).then(res => {
-          console.log(res.data.data)
           this.loading = false
           this.liveD = res.data.data
+          console.log(res.data.data)
         }).catch(e => alert(e))
       },
       timeFn(time) {
