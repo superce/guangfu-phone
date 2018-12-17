@@ -53,6 +53,9 @@ import axios from 'axios'
 </script>
 
 <style scoped>
+.lun_bo{
+  margin-top: 4rem;
+}
   .swiper{
     height: 10rem;
   }

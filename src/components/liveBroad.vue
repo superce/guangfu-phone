@@ -91,7 +91,6 @@
           this.loading = true
           this.REQS = false
           let date = new Date(new Date()).getTime();
-          console.log(date)
           let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
           axios.get(getNewsListUrl,{
               headers:{
@@ -117,9 +116,7 @@
                 this.dataMsg.push(arr[i])
               }
               this.max = res.data.data.minid
-              this.min = this.max - 10
-              console.log(this.max + '---' + this.min + '加载成功')
-              
+              this.min = this.max - 10              
             })
             .catch(e => {
               alert('没有更多新闻了')

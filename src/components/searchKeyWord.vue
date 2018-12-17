@@ -85,7 +85,7 @@ import axios from 'axios'
   }
   .search_top i{
     position: absolute;
-    top:.8rem;
+    top:.9rem;
     left: .4rem
   }
   .search_top a{

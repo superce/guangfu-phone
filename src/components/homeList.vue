@@ -112,7 +112,6 @@ export default {
       this.max = ''
       this.min = ''
       let data = this.$route.params.id
-      console.log(data + '频道ID')
       let date = new Date(new Date()).getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
       axios.get(getNewsListUrl,{
@@ -134,10 +133,8 @@ export default {
         .then(res => {
           this.loading = false
           this.dataMsg = res.data.data.items
-          // let scroll = document.body.scrollTop || document.documentElement.scrollTop 
           this.max = res.data.data.minid;
           this.min = this.max - 10
-          // scroll = 0            
         })
         .catch(e => alert('请求新闻失败'))
     },
@@ -202,7 +199,6 @@ export default {
           }
         }).then((res) => {
         //请求的列表数据
-        console.log(this.max + '----' + this.min)
         let arr = res.data.data.items
         // 如果是第一页需手动制空列表
         if (page.num === 1) this.dataMsg = []
