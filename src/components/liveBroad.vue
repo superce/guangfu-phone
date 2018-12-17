@@ -61,7 +61,7 @@
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'
       axios.get(getNewsListUrl,{
           headers:{
-          Appid:'hb_app_android',
+          Appid:'gf_app_android',
           Timestamp:date,
           Sign:'aaaa',
           vtoken:''

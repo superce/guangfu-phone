@@ -71,6 +71,9 @@ export default {
  .header{
     width: 100%;
     background: #65a1fc;
+    position: fixed;
+    top: 0;
+    z-index: 999;
  }
   .logo{
     width: 17.75rem;

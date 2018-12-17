@@ -51,7 +51,7 @@ import axios from 'axios'
         let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
         axios.get(searchUrl,{
           headers:{
-            Appid:'hb_app_android',
+            Appid:'gf_app_android',
             Timestamp:date,
             Sign:'aaaa',
             vtoken:''

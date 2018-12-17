@@ -1,6 +1,6 @@
 <template>
   <div class="home_content">
-    <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp'>
+    <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp' @init='mescrollInit'>
       <div class="home-down">
         <ul>
           <li v-for="(top,index) in topMsg" :key="index" v-if="top.showTempate == 11">
@@ -63,12 +63,8 @@ export default {
     return {
       loading:true,
       mescroll: null, // mescroll实例对象
-      mescrollDown:{
-        callback:this.upCallback
-      }, //下拉刷新的配置
-      mescrollUp:{
-        callback: this.downCallback
-      },
+      mescrollDown:{callback:this.upCallback}, //下拉刷新的配置
+      mescrollUp:{callback: this.downCallback},
       REQS:true,
       dataMsg:'',
       images:'',
@@ -81,14 +77,13 @@ export default {
     this.getNewsList()
     this.top()
   },
-  // mounted(){
-  //   window.addEventListener('scroll',this.gundong)
-  // },
-  // beforeDestroy(){
-  //   window.removeEventListener("scroll",this.gundong)
-  // },
   watch:{
-    "$route": ['getNewsList','top']//监听路由变化，重新渲染数据
+    //"$route": ['getNewsList','top']//监听路由变化，重新渲染数据
+    $route(newD,oldD){
+      this.getNewsList()
+      this.top()
+      this.mescroll.scrollTo(0,0)
+    }
   },
   methods:{
     // 置顶
@@ -98,7 +93,7 @@ export default {
       let getNewsListUrl = 'https://api.dltoutiao.com/api/Ad/ChannelTopAds'
       axios.get(getNewsListUrl,{
           headers:{
-          Appid:'hb_app_android',
+          Appid:'gf_app_android',
           Timestamp:date,
           Sign:'aaaa',
           vtoken:''
@@ -112,18 +107,17 @@ export default {
         })
         .catch(e => alert('获取置顶新闻失败'))
     },
-    // mescrollInit (mescroll) {
-    //   this.mescroll = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
-    // },
     // 列表数据
     getNewsList(){
+      this.max = ''
+      this.min = ''
       let data = this.$route.params.id
       console.log(data + '频道ID')
       let date = new Date(new Date()).getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
       axios.get(getNewsListUrl,{
           headers:{
-          Appid:'hb_app_android',
+          Appid:'gf_app_android',
           Timestamp:date,
           Sign:'aaaa',
           vtoken:''
@@ -143,9 +137,7 @@ export default {
           // let scroll = document.body.scrollTop || document.documentElement.scrollTop 
           this.max = res.data.data.minid;
           this.min = this.max - 10
-          // scroll = 0
-          // document.body.scrollHeight = 0
-            
+          // scroll = 0            
         })
         .catch(e => alert('请求新闻失败'))
     },
@@ -160,7 +152,7 @@ export default {
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
       axios.get(getNewsListUrl,{
           headers:{
-          Appid:'hb_app_android',
+          Appid:'gf_app_android',
           Timestamp:date,
           Sign:'aaaa',
           vtoken:''
@@ -188,6 +180,7 @@ export default {
     mescrollInit (mescroll) {
       this.mescroll = mescroll
     },
+    // 上拉加载
     downCallback (page, mescroll) {
       let data = this.$route.params.id
       let date = new Date(new Date()).getTime();
@@ -217,7 +210,7 @@ export default {
         this.dataMsg = this.dataMsg.concat(arr)
         // 数据渲染成功后,隐藏下拉刷新的状态
         this.$nextTick(() => {
-          mescroll.endSuccess(arr.length)
+          mescroll.endSuccess()
         })
         this.max = res.data.data.minid
         this.min = this.max - 10
