@@ -55,7 +55,7 @@ import axios from 'axios'
           })
           this.keyWord = ''
         }).catch(e => {
-          alert('搜索失败2')
+          alert('搜索失败')
           this.keyWord = ''
         })
       }
@@ -81,11 +81,11 @@ import axios from 'axios'
     border-radius: 1rem;
     outline: none;
     border: none;
-    padding-left: 1.2rem;
+    padding-left: 1.4rem;
   }
   .search_top i{
     position: absolute;
-    top:.9rem;
+    top:.85rem;
     left: .4rem
   }
   .search_top a{

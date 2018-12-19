@@ -100,7 +100,7 @@ img{
 .detail-content p .author{
   font-size: .7rem;
   color:#333333;
-  line-height: 1.5rem;
+  line-height: 1.7rem;
   margin-left: .25rem;
 }
 .detail-content p .data{

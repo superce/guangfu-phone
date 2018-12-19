@@ -286,7 +286,7 @@ export default {
     margin-top: .5rem;
   }
    .home_content ul li span{
-     margin-right:.5rem;
+     margin-right:.2rem;
      color:#a9a8a8;
    }
   .home_content ul .left .top{
@@ -326,10 +326,16 @@ export default {
     height: .4rem;
     margin:0 .1rem  0 -.4rem;
   }
+  .home_content ul li p{
+    display: flex;
+  }
+  .home_content ul li .one .v{
+    margin-top: .15rem;
+  }
   .v{
     width:.5rem !important;
     height: .5rem !important;
-    margin: 0 .05rem 0 -.2rem;
+    margin: .15rem .1rem 0 0;
   }
 </style>
 

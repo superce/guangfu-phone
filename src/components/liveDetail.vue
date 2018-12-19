@@ -78,7 +78,7 @@ import Loading from './Loading'
     methods:{
       height(){
         this.setHeight = !this.setHeight
-        this.open = '下载一起光伏，阅读更加'
+        this.open = '下载一起光伏，阅读更佳'
       },
       getLiveDetail(){
         let data = this.$route.params.id
