@@ -134,7 +134,7 @@ import axios from 'axios'
     width: 11rem;
   }
   .keywordlist ul li h4{
-    height: 2.51rem;
+    max-height: 2.51rem;
     overflow: hidden;
     font-size: .8rem;
     line-height: 1.2rem;
