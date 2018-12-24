@@ -3,11 +3,20 @@
     <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp' @init='mescrollInit'>
       <div class="home-down">
         <ul>
-          <li v-for="(top,index) in topMsg" :key="index" v-if="top.showTempate == 11">
-            <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}">
+          <li v-for="(top,index) in topMsg" :key="index + 'i'" v-if="top.showTempate == 10">
+            <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-if="index == 0">
               <div class="left" >
                 <h4>{{ top.title }}</h4>
-                <p><span class="top">置顶</span><span>{{top.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(data) }}</span></p>
+                <p><span class="top">置顶</span><span>{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(top) }}</span></p>
+              </div>
+              <div class="right">
+                <img v-lazy="top.imageList" :alt="top.title">
+              </div>
+            </router-link>
+            <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-else>
+              <div class="left" >
+                <h4>{{ top.title }}</h4>
+                <p><span class="top">热</span><span>{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(top) }}</span></p>
               </div>
               <div class="right">
                 <img v-lazy="top.imageList" :alt="top.title">
@@ -200,6 +209,7 @@ export default {
         }).then((res) => {
         //请求的列表数据
         let arr = res.data.data.items
+        console.log(arr)
         // 如果是第一页需手动制空列表
         if (page.num === 1) this.dataMsg = []
         // 把请求到的数据添加到列表
@@ -290,9 +300,10 @@ export default {
      color:#a9a8a8;
    }
   .home_content ul .left .top{
-    border: 2px solid #ff0000;
+    border: 1px solid #ff0000;
     color:#ff0000;
-    padding:0 .1rem
+    padding: .1rem .1rem .15rem;
+    line-height: .5rem;
   }
   .home_content ul .right{
     width: 5.75rem;
