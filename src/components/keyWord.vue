@@ -4,7 +4,7 @@
       <h4>大家都在搜</h4>
     </div>
     <ul>
-      <li v-for="(w,index) in word" :key="index" @click='keyWordList(w)'><span>{{ index + 1 }}</span><span class="a">{{ w }}</span></li>
+      <li v-for="(w,index) in word" :key="index"><span>{{ index + 1 }}</span><span class="a" @click='keyWordList($event)'>{{ w }}</span></li>
     </ul>
     <Loading v-if="loading"/>
   </div>
@@ -46,31 +46,14 @@ import axios from 'axios'
         })
         .catch(e => alert('关键词加载失败'))
      },
-     keyWordList(w){
-       let date = new Date(new Date()).getTime();
-        let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
-        axios.get(searchUrl,{
-          headers:{
-            Appid:'gf_app_android',
-            Timestamp:date,
-            Sign:'aaaa',
-            vtoken:''
-          },
-          params:{
-            'keyword':w,
-            'pageindex':1,
-            'pagesize':10
-          }
-        }).then(res => {
-          this.$router.push({
+     keyWordList(e){
+       let res = e.target.innerText
+       this.$router.push({
             path:'keywordlist',
             query:{
-              'keyword':res.data.data.list
+              'keywordid':res
             }
           })
-        }).catch(e => {
-          alert('搜索失败')
-        })
      }
    }
   }

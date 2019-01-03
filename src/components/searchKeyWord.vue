@@ -17,7 +17,7 @@ import axios from 'axios'
     name:'searchKeyWord',
     data(){
       return{
-        keyWord:''
+        keyWord:'',
       }
     },
     
@@ -26,38 +26,37 @@ import axios from 'axios'
         let kwLen = this.keyWord.trim().length
         if(kwLen < 2){
           alert('请输入两个以上关键词')
-          return 
+          return
         }
         this.search()
       },
       search(){
-        let date = new Date(new Date()).getTime();
-        let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
-        axios.get(searchUrl,{
-          headers:{
-            Appid:'gf_app_android',
-            Timestamp:date,
-            Sign:'aaaa',
-            vtoken:''
-          },
-          params:{
-            'keyword':this.keyWord,
-            'pageindex':1,
-            'pagesize':10
-          }
-        }).then(res => {
-          console.log(res)
+        // let date = new Date(new Date()).getTime();
+        // let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
+        // axios.get(searchUrl,{
+        //   headers:{
+        //     Appid:'gf_app_android',
+        //     Timestamp:date,
+        //     Sign:'aaaa',
+        //     vtoken:''
+        //   },
+        //   params:{
+        //     'keyword':this.keyWord,
+        //     'pageindex':1,
+        //     'pagesize':10
+        //   }
+        // }).then(res => {
           this.$router.push({
             path:'keyWordList',
             query:{
-              'keywordid':res.data.data.list
+              'keywordid':this.keyWord
             }
           })
           this.keyWord = ''
-        }).catch(e => {
-          alert('搜索失败')
-          this.keyWord = ''
-        })
+        // }).catch(e => {
+        //   alert('搜索失败')
+        //   this.keyWord = ''
+        // })
       }
     }
   }

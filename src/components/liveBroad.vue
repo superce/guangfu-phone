@@ -119,7 +119,6 @@
               this.min = this.max - 10              
             })
             .catch(e => {
-              alert('没有更多新闻了')
               this.loading = false
               this.REQS = false
             })

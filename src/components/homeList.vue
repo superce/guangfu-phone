@@ -3,31 +3,45 @@
     <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp' @init='mescrollInit'>
       <div class="home-down">
         <ul>
-          <li v-for="(top,index) in topMsg" :key="index + 'i'" v-if="top.showTempate == 10">
-            <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-if="index == 0">
-              <div class="left" >
-                <h4>{{ top.title }}</h4>
-                <p><span class="top">置顶</span><span>{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(top) }}</span></p>
-              </div>
-              <div class="right">
-                <img v-lazy="top.imageList" :alt="top.title">
-              </div>
-            </router-link>
-            <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-else>
-              <div class="left" >
-                <h4>{{ top.title }}</h4>
-                <p><span class="top">热</span><span>{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(top) }}</span></p>
-              </div>
-              <div class="right">
-                <img v-lazy="top.imageList" :alt="top.title">
-              </div>
-            </router-link>
+          <li v-for="(top,index) in topMsg" :key="index + 'i'">
+            <div v-if="top.showTempate == 10">
+              <!-- 置顶有图片 -->
+              <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-if="index == 0 && top.imageList != ''">
+                <div class="left" >
+                  <h4>{{ top.title }}</h4>
+                  <p><span class="top">置顶</span><span class="top-msg">{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span class="top-data">{{ timeFn(top) }}</span></p>
+                </div>
+                <div class="right">
+                  <img v-lazy="top.imageList" :alt="top.title">
+                </div>
+              </router-link>
+              <!-- 置顶无图片 -->
+              <router-link :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-else-if="index == 0">
+                  <h4>{{ top.title }}</h4>
+                  <p><span class="top">置顶</span><span class="top-msg">{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span class="top-data">{{ timeFn(top) }}</span></p>
+              </router-link>
+              <!-- 热门有图片 -->
+              <router-link class='left-right' :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-else-if="index >= 0 && top.imageList != ''">
+                <div class="left" >
+                  <h4>{{ top.title }}</h4>
+                  <p><span class="top">热</span><span class="top-msg">{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span class="top-data">{{ timeFn(top) }}</span></p>
+                </div>
+                <div class="right">
+                  <img v-lazy="top.imageList" :alt="top.title">
+                </div>
+              </router-link>
+              <!-- 热门无图片 -->
+              <router-link :to="{name:'DetailNews',params:{id:top.id,icon:top.headImg}}" v-else>
+                  <h4>{{ top.title }}</h4>
+                  <p><span class="top">热</span><span class="top-msg">{{top.source}}</span><img class="v" v-if="top.user != null && top.user.isVip == 1" src="../assets/images/4.png" alt=""><span class="top-data">{{ timeFn(top) }}</span></p>
+              </router-link>
+            </div>
           </li>
           <li v-for="(data,index) in dataMsg" :key="index">
             <router-link class='left-right' :to="{name:'DetailNews',params:{id:data.id,icon:data.headImg}}" v-if="data.showTempate == 0 && data.user == null && data.imageList != ''">
               <div class="left" >
                 <h4>{{ data.title }}</h4>
-                <p><span>{{data.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span>{{ timeFn(data) }}</span></p>
+                <p><span class="top-msg">{{data.source}}</span><img class="v" v-if="data.user != null && data.user.isVip == 1" src="../assets/images/4.png" alt=""><span class="top-data">{{ timeFn(data) }}</span></p>
               </div>
               <div class="right">
                 <img v-lazy="data.imageList" :alt="data.title">
@@ -73,7 +87,7 @@ export default {
       loading:true,
       mescroll: null, // mescroll实例对象
       mescrollDown:{callback:this.upCallback}, //下拉刷新的配置
-      mescrollUp:{callback: this.downCallback},
+      mescrollUp:{callback: this.downCallback,offset:400},
       REQS:true,
       dataMsg:'',
       images:'',
@@ -98,7 +112,7 @@ export default {
     // 置顶
     top(){
       let data = this.$route.params.id
-      let date = new Date(new Date()).getTime();
+      let date = new Date().getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/Ad/ChannelTopAds'
       axios.get(getNewsListUrl,{
           headers:{
@@ -112,6 +126,7 @@ export default {
           }
         })
         .then(res => {
+          // console.log(res.data.data)
           this.topMsg = res.data.data
         })
         .catch(e => alert('获取置顶新闻失败'))
@@ -121,7 +136,7 @@ export default {
       this.max = ''
       this.min = ''
       let data = this.$route.params.id
-      let date = new Date(new Date()).getTime();
+      let date = new Date().getTime();
       let getNewsListUrl = 'https://api.dltoutiao.com/api/News/GetNewsList'   
       axios.get(getNewsListUrl,{
           headers:{
@@ -209,7 +224,6 @@ export default {
         }).then((res) => {
         //请求的列表数据
         let arr = res.data.data.items
-        console.log(arr)
         // 如果是第一页需手动制空列表
         if (page.num === 1) this.dataMsg = []
         // 把请求到的数据添加到列表
@@ -298,13 +312,30 @@ export default {
    .home_content ul li span{
      margin-right:.2rem;
      color:#a9a8a8;
+     height: .85rem;
    }
-  .home_content ul .left .top{
+   .home_content ul li span.top-msg{
+     overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+   }
+   .home_content ul li span.top-data{
+     overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+   }
+   .home_content ul li span.top{
+     border: 1px solid #ff0000;
+    color:#ff0000;
+    padding:0 .05rem;
+    line-height: .75rem;
+   }
+  /* .home_content ul .left .top{
     border: 1px solid #ff0000;
     color:#ff0000;
     padding: .1rem .1rem .15rem;
-    line-height: .5rem;
-  }
+    line-height: .6rem;
+  } */
   .home_content ul .right{
     width: 5.75rem;
     height: 3.75rem;

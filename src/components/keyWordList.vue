@@ -73,18 +73,42 @@ import axios from 'axios'
     name:'keyWordList',
     data(){
       return{
-        keyList:this.$route.query.keywordid,
-        keyword:this.$route.query.keyword,
+        keyList:'',
+        keyword:''
       }
     },
     watch:{
-      '$route'(keywordlist,keyword){
-        if(this.$route.query.keywordid){
-          this.keyList = this.$route.query.keywordid
-        }
+      $route(){
+        this.getNews()
       }
     },
+    mounted(){
+      this.getNews()
+    },
     methods:{
+      // 搜索
+      getNews(){
+        let kW = this.$route.query.keywordid
+        let date = new Date(new Date()).getTime();
+        let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
+        axios.get(searchUrl,{
+          headers:{
+            Appid:'gf_app_android',
+            Timestamp:date,
+            Sign:'aaaa',
+            vtoken:''
+          },
+          params:{
+            'keyword':kW,
+            'pageindex':1,
+            'pagesize':10
+          }
+        }).then(res => {
+          this.keyList = res.data.data.list
+        }).catch(e => {
+          alert('搜索失败')
+        })
+      },
       // 分割图片链接
       splitImages(images){
         return images.imageList.split("|")
