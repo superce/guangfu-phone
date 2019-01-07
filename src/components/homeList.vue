@@ -2,6 +2,7 @@
   <div class="home_content">
     <mescroll-vue ref="mescroll" :down="mescrollDown" :up='mescrollUp' @init='mescrollInit'>
       <div class="home-down">
+        <p v-show="p">更新时间：{{time}}</p>
         <ul>
           <li v-for="(top,index) in topMsg" :key="index + 'i'">
             <div v-if="top.showTempate == 10">
@@ -84,6 +85,8 @@ export default {
   name:'homeList',
   data () {
     return {
+      time:'',
+      p:false,
       loading:true,
       mescroll: null, // mescroll实例对象
       mescrollDown:{callback:this.upCallback}, //下拉刷新的配置
@@ -126,7 +129,6 @@ export default {
           }
         })
         .then(res => {
-          // console.log(res.data.data)
           this.topMsg = res.data.data
         })
         .catch(e => alert('获取置顶新闻失败'))
@@ -193,7 +195,11 @@ export default {
           this.$nextTick(() => {
             mescroll.endSuccess()
           })
-        
+          this.time = this.jieTime()
+            this.p = true
+          setTimeout(() => {
+            this.p = false
+          },2000)
         })
         .catch(e => alert('请求新闻失败'))
     },
@@ -239,6 +245,17 @@ export default {
         mescroll.endErr()
       })
     },
+    // 截取时间
+    jieTime(){
+      let data = new Date()
+      let hour = data.getHours()
+      let minutes = data.getMinutes()
+      let seconds = data.getSeconds()
+      if(hour < 10) hour = "0" + hour
+      if(minutes < 10) minutes = "0" + minutes
+      if(seconds < 10) seconds = "0" + seconds
+      return hour + ':' + minutes + ':' + seconds
+    },
     // 计算时间差
      timeFn(time) {
         //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
@@ -280,6 +297,23 @@ export default {
     left:50%;
     transform: translate(-50%,-50%)
   }
+   @keyframes pp
+  {
+    0%{opacity: 0;}
+    25%{opacity: 0.25;}
+    50%{opacity: 0.5;}
+    75%{opacity: 0.75;}
+   100%{opacity: 1;}
+  }
+  .home_content .home-down>p{
+    font-size: .7rem;
+    color: #65a1fc;
+    font-family: Microsoft Yahei;
+    text-align: center;
+    margin-top: 10px;
+    line-height: 22px;
+    animation: pp 1s ;
+  }
   .home_content ul{
     width: 17.75rem;
     margin: 0 auto;
@@ -315,6 +349,7 @@ export default {
      height: .85rem;
    }
    .home_content ul li span.top-msg{
+     max-width: 6.2rem;
      overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
