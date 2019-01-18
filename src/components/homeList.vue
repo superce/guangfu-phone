@@ -89,7 +89,7 @@ export default {
       p:false,
       loading:true,
       mescroll: null, // mescroll实例对象
-      mescrollDown:{callback:this.upCallback}, //下拉刷新的配置
+      mescrollDown:{callback:this.upCallback,auto:false}, //下拉刷新的配置
       mescrollUp:{callback: this.downCallback,offset:400},
       REQS:true,
       dataMsg:'',
@@ -196,7 +196,7 @@ export default {
             mescroll.endSuccess()
           })
           this.time = this.jieTime()
-            this.p = true
+          this.p = true
           setTimeout(() => {
             this.p = false
           },2000)
@@ -272,9 +272,7 @@ export default {
         var leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
         var seconds=Math.round(leave3/1000)
         // console.log(" 相差 "+dayDiff+"天 "+hours+"小时 "+minutes+" 分钟"+seconds+" 秒")
-        // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数"
-        //     ,hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
-
+        // console.log(dateDiff+"时间差的毫秒数",dayDiff+"计算出相差天数",leave1+"计算天数后剩余的毫秒数",hours+"计算出小时数",minutes+"计算相差分钟数",seconds+"计算相差秒数");
         if(dayDiff >= 1) return dayDiff + '天以前'
         if(hours < 24 && hours >= 1 ) return hours + '小时以前'
         if(minutes < 60 && minutes >= 1) return minutes + "分钟以前"
