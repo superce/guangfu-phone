@@ -111,6 +111,9 @@ export default {
       this.mescroll.scrollTo(0,0)
     }
   },
+  computed:{
+    
+  },
   methods:{
     // 置顶
     top(){

@@ -64,17 +64,23 @@
         </router-link>
       </li>
     </ul>
+    <Loading v-if="loading"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import Loading from './Loading'
   export default {
+    components:{Loading},
     name:'keyWordList',
     data(){
       return{
         keyList:'',
-        keyword:''
+        keyword:'',
+        REQS:true,
+        Loading:false,
+        pageindex:11
       }
     },
     watch:{
@@ -84,6 +90,10 @@ import axios from 'axios'
     },
     mounted(){
       this.getNews()
+      window.addEventListener('scroll',this.more)
+    },
+    beforeDestroy(){
+      window.removeEventListener('scroll',this.more)
     },
     methods:{
       // 搜索
@@ -108,6 +118,36 @@ import axios from 'axios'
         }).catch(e => {
           alert('搜索失败')
         })
+      },
+      more(){
+        let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+        let wHeight = window.innerHeight 
+        let scrollHeight = document.body.scrollHeight
+        if(scrollTop + wHeight >= scrollHeight - 50 && this.REQS){
+          this.REQS = false
+          this.loading = true
+          let kW = this.$route.query.keywordid
+        let date = new Date(new Date()).getTime();
+        let searchUrl = 'https://api.dltoutiao.com/api/News/SearchNews'
+        axios.get(searchUrl,{
+          headers:{
+            Appid:'gf_app_android',
+            Timestamp:date,
+            Sign:'aaaa',
+            vtoken:''
+          },
+          params:{
+            'keyword':kW,
+            'pageindex':this.pageindex,
+            'pagesize':10
+          }
+        }).then(res => {
+          let arr = res.data.data.list
+          this.keyList = this.keyList.concat(arr)
+          this.pageindex += 10
+          this.REQS = true
+        }).catch(e => {})
+        }
       },
       // 分割图片链接
       splitImages(images){
